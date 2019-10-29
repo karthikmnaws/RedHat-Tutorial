@@ -1,0 +1,160 @@
+
+					Deny Root User Login Remotely
+					=============================
+Note::
+========
+First Open Two VmWare , and Up 2 Linux OS, i.e Desktop and Server Simultaneously, and check to ping each other or not
+
+192.168.133.179 Desktop IP 
+192.168.133.181 Server IP
+
+
+--------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+								Inside Desktop
+								==============
+
+
+$ ping server0.example.com
+$ ssh root@server0.example.com
+$ ping 192.168.133.181		// if hostname din't work
+$ ssh root@192.168.133.181 -X     // if hostname din't work
+$ vim /etc/ssh/sshd_config
+	Go to line line 38, change to, PermitRootLogin no
+$ systemctl restart sshd.service
+$ adduser ram
+$ adduser seta
+$ passwd ram
+$ passwd seta
+$ vim /etc/ssh/sshd_config
+	DenyUsers ram seta   // Go to end of the line and type this
+$ systemctl restart sshd.service
+
+
+
+[karthik@desktop0 ~]$ su -
+Password: 
+Last login: Wed Jan  9 11:15:06 IST 2019 on pts/0
+[root@desktop0 ~]# 
+[root@desktop0 ~]# ssh root@server0.example.com
+ssh: Could not resolve hostname server0.example.com: Name or service not known
+[root@desktop0 ~]# 
+[root@desktop0 ~]# 
+[root@desktop0 ~]# ping server0.example.com
+ping: server0.example.com: Name or service not known
+[root@desktop0 ~]# ping server0.example.com
+ping: server0.example.com: Name or service not known
+[root@desktop0 ~]# 
+[root@desktop0 ~]# 
+[root@desktop0 ~]# ping 192.168.133.181
+PING 192.168.133.181 (192.168.133.181) 56(84) bytes of data.
+64 bytes from 192.168.133.181: icmp_seq=1 ttl=64 time=0.814 ms
+64 bytes from 192.168.133.181: icmp_seq=2 ttl=64 time=1.02 ms
+^C
+--- 192.168.133.181 ping statistics ---
+2 packets transmitted, 2 received, 0% packet loss, time 1000ms
+rtt min/avg/max/mdev = 0.814/0.921/1.029/0.111 ms
+[root@desktop0 ~]# 
+[root@desktop0 ~]# 
+[root@desktop0 ~]# ssh root@server0.example.com -X
+ssh: Could not resolve hostname server0.example.com: Name or service not known
+[root@desktop0 ~]# 
+[root@desktop0 ~]# ssh root@192.168.133.181 -X
+root@192.168.133.181's password: 
+Last login: Wed Jan  9 00:56:34 2019
+/usr/bin/xauth:  file /root/.Xauthority does not exist
+ 
+[root@server0 ~]# 
+[root@server0 ~]# vim /etc/ssh/sshd_config
+[root@server0 ~]# 
+[root@server0 ~]# systemctl restart sshd.service
+[root@server0 ~]# 
+[root@server0 ~]# 
+[root@server0 ~]# adduser jhon
+Creating mailbox file: File exists
+[root@server0 ~]# adduser ram
+[root@server0 ~]# adduser seta
+[root@server0 ~]# passwd ram
+Changing password for user ram.
+New password: 
+BAD PASSWORD: The password is shorter than 8 characters
+Retype new password: 
+passwd: all authentication tokens updated successfully.
+[root@server0 ~]# 
+[root@server0 ~]# passwd seta
+Changing password for user seta.
+New password: 
+BAD PASSWORD: The password is shorter than 8 characters
+Retype new password: 
+passwd: all authentication tokens updated successfully.
+[root@server0 ~]# 
+[root@server0 ~]# vim /etc/ssh/sshd_config
+[root@server0 ~]# 
+[root@server0 ~]# systemctl restart sshd.service
+[root@server0 ~]#
+
+Now go to Server Machine, Try to login with Normal User, it will Deny it.
+
+----------------------------------------------------------------------------------------------------------------------------------------------
+
+							Inside Server
+							=============
+
+
+$ systemctl status sshd.service
+$ ssh seta@192.168.133.179
+$ ssh root@192.168.133.179
+
+
+
+
+[karthik@server0 ~]$ hostname
+server0.example.com
+[karthik@server0 ~]$ su -
+Password: 
+Last login: Wed Jan  9 00:15:06 EST 2019 on pts/0
+[root@server0 ~]# 
+[root@server0 ~]# 
+[root@server0 ~]# hostname -I
+192.168.133.181 192.168.122.1 
+[root@server0 ~]# 
+[root@server0 ~]# 
+[root@server0 ~]# systemctl status sshd.service
+? sshd.service - OpenSSH server daemon
+   Loaded: loaded (/usr/lib/systemd/system/sshd.service; enabled; vendor preset: enabled)
+   Active: active (running) since Wed 2019-01-09 01:03:17 EST; 25s ago
+     Docs: man:sshd(8)
+           man:sshd_config(5)
+ Main PID: 16623 (sshd)
+    Tasks: 1
+   CGroup: /system.slice/sshd.service
+           +-16623 /usr/sbin/sshd -D
+
+Jan 09 01:03:16 server0.example.com systemd[1]: Starting OpenSSH server daemon...
+Jan 09 01:03:17 server0.example.com sshd[16623]: Server listening on 0.0.0.0 port 22.
+Jan 09 01:03:17 server0.example.com sshd[16623]: Server listening on :: port 22.
+Jan 09 01:03:17 server0.example.com systemd[1]: Started OpenSSH server daemon.
+[root@server0 ~]# 
+[root@server0 ~]# 
+
+[root@server0 ~]# ssh seta@192.168.133.179						// This shows, Login with normal user will deny
+The authenticity of host '192.168.133.179 (192.168.133.179)' can't be established.
+ECDSA key fingerprint is SHA256:OYch+Y5qD1Ylx++OXAAj2KgpguI3FIeRA87BhwUgKwY.
+ECDSA key fingerprint is MD5:5f:d8:45:64:27:eb:56:39:dc:e2:9d:18:a1:7a:8e:5b.
+Are you sure you want to continue connecting (yes/no)? yes
+Warning: Permanently added '192.168.133.179' (ECDSA) to the list of known hosts.
+seta@192.168.133.179's password: 
+Permission denied, please try again.
+seta@192.168.133.179's password: 
+Permission denied, please try again.
+seta@192.168.133.179's password: 
+Permission denied (publickey,gssapi-keyex,gssapi-with-mic,password).
+[root@server0 ~]# 
+
+[root@server0 ~]# ssh root@192.168.133.179						// This show, I am able to login from root user
+root@192.168.133.179's password: 
+Last login: Wed Jan  9 11:24:38 2019
+[root@desktop0 ~]#
+[root@desktop0 ~]#
+
+-----------------------------------------------------------------------------------------------------------------------------------------

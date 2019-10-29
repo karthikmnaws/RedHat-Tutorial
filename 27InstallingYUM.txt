@@ -1,0 +1,59 @@
+
+[root@localhost ~]# hostname -I
+192.168.56.129 192.168.122.1 
+[root@localhost ~]# vim /etc/hosts
+[root@localhost ~]# cat /etc/hosts
+127.0.0.1   localhost localhost.localdomain localhost4 localhost4.localdomain4
+::1         localhost localhost.localdomain localhost6 localhost6.localdomain6
+
+192.168.56.129 server.classroom.com
+[root@localhost ~]# 
+
+
+
+Restart the machine
+======================
+
+Note:: Copy and paste Packages from RHEL Server x86_64 [like CD on desktop in Redhat] to Desktop.
+
+[root@server ~]# 
+[root@server ~]# cd Desktop/Packages/
+[root@server Packages]# 
+[root@server Packages]# rpm -ivh createrepo-0.9.9-28.el7.noarch.rpm 
+warning: createrepo-0.9.9-28.el7.noarch.rpm: Header V3 RSA/SHA256 Signature, key ID fd431d51: NOKEY
+Preparing...                          ################################# [100%]
+	package createrepo-0.9.9-28.el7.noarch is already installed
+[root@server Packages]# 
+[root@server Packages]# 
+[root@server Packages]# createrepo /root/Desktop/Packages/
+Spawning worker 0 with 2576 pkgs
+Spawning worker 1 with 2576 pkgs
+Workers Finished
+Saving Primary metadata
+Saving file lists metadata
+Saving other metadata
+Generating sqlite DBs
+Sqlite DBs complete
+[root@server Packages]# 
+[root@server Packages]# 
+[root@server Packages]# cat >> /etc/yum.repos.d/new.repo
+[redhat]
+name=new
+baseurl=file:///root/Desktop/Packages
+gpgcheck=0
+enabled=1
+[root@server Packages]# 
+[root@server Packages]# 
+[root@server Packages]# yum clean all
+Loaded plugins: langpacks, product-id, search-disabled-repos, subscription-manager
+This system is not registered with an entitlement server. You can use subscription-manager to register.
+Cleaning repos: redhat
+[root@server Packages]# yum repolist
+Loaded plugins: langpacks, product-id, search-disabled-repos, subscription-manager
+This system is not registered with an entitlement server. You can use subscription-manager to register.
+redhat                                                                                                                       | 2.9 kB  00:00:00     
+redhat/primary_db                                                                                                            | 4.2 MB  00:00:00     
+repo id                                                                  repo name                                                            status
+redhat                                                                   new                                                                  5,152
+repolist: 5,152
+[root@server Packages]# yum install git -y

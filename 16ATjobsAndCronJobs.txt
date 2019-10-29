@@ -1,0 +1,72 @@
+
+
+							AT jobs and Cron jobs
+							=====================
+				( To identify Server connectivity problem, we use AT/Cron jobs )
+
+- Two types of scheduling jobs as AT jobs and Cron jobs
+		
+							Features of AT jobs are
+							=======================
+  
+  * They are single time, once scheduled we cannot edit the jobs. 80D is a Deamon responsible for AT jobs.
+  * AT jobs are spooled (Que) at /var/spoon/80	Directory.
+  * We can scheduled 80 jobs w.r.t perticular/absolute time
+
+- Syntax
+     *	atq <time><date>
+  	atq = to check the scheduled jobs in AT directory
+     *  atrm <job number>
+	or
+     *  at -r <job number>    // to remove a job
+
+	Time period		Example		Start Time
+	===========		=======		===========
+	  mins		at now + 1 min 		Start the job after a minute
+	  hours		at now + 1 hr		Start the job after a hours
+	  days		at now + 1 day		Start the job after a day
+	  weeks		at now + 1 week		Start the job after a week
+	  N/A		at tea time		Execute the job at 4:00 pm
+	  N/A		at 3:00 25/12/13	Execute the job at 3 am on 25th Dec 2013
+------------------------------------------------------------------------------------------------------------------------------------
+		
+					Cron Jobs
+					=========
+
+- Cron jobs are more than one time executable files, and they can be modified, and CronD is a deamon responsible for Cron jobs
+- Cron Jobs are spooned at	/var/spoon/cron	Directory
+
+- Apart from user cron jobs, there are system cron jobs and they are not defined by Cron tab, instead they configured in set of configuration files.
+- They are scheduled at /etc/cron.d	Directory. or in /etc/crontab
+
+
+*** Very Importnt
+- 3 Key Scripts which are important in cron are
+	1) Log rotate
+		For rotating log files. [ Which creates log file every day and erase for next day, it repeates ]
+
+	2) mlocate.cron
+		Which updates the locate file database, locate is advanced of Find, which locate everything in database, mlocate.com update the database.
+
+	3) tmpwatch
+		Which wipes files from /temp or /var/temp , after a specific amount of time.
+------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+			At jobs and Cron jobs
+			--------------------
+
+	Below table is for January 10th, Thuresday, 9 hr 53 min.
+
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------
+ min	 		hours		date		month		day of week
+(0-59)			(0-23)		(1-31)		(1-12)		(Sun - Sat)		
+	
+ 53			9		10		1			4	mkdir /root/dir7	9 hr 53 min,January 10th, Thuresday, 
+ 53			9		10		1			*	mkdir /root/dir7	9 hr 53 min,January 10th, any day
+ 53			9		10		*			*	mkdir /root/dir7	9 hr 53 min,10th, any month, day
+ 53			9		*		*			*	mkdir /root/dir7	9 hr 53 min,any month, day, date of 9 hr 53 min 
+ 53			*		*		*			*	mkdir /root/dir7	53 min, any hrs, date, month,  day of 53 min
+ */53			*		*		*			*	mkdir /root/dir7	At Every interval of 53 min
+ */[1,2,3,51,59]	*		*		*			*	mkdir /root/dir7	At time 1, 2, 3, 51, 59 min
+ */[1 - 24]		*		*		*			*	mkdir /root/dir7	At time in between 1 to 24 min
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------						

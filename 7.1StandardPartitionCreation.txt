@@ -1,0 +1,382 @@
+
+$ fdisk -l
+$ mkfs.ext4 /dev/sda5
+$ mkfs.vfat /dev/sda6
+$ mkfs.xfs /dev/sda7
+$ mkdir /dir1 /dir2 /dir3
+$ mount /dev/sda5 /dir1
+$ mount /dev/sda6 /dir2
+$ mount /dev/sda7 /dir3
+$ df -hT
+$ vim /etc/fstab
+	/dev/sda5	/dir1	ext4	defaults	0 0
+	/dev/sda6	/dir2	vfat	defaults	0 0
+	/dev/sda7 	/dir3	xfs	defaults	0 0
+$mount -a
+
+
+
+[karthik@localhost ~]$ su -
+Password: 
+Last login: Mon Dec 10 10:57:42 IST 2018 on pts/0
+ABRT has detected 1 problem(s). For more info run: abrt-cli list --since 1544419662
+[root@localhost ~]# fdisk -l
+
+Disk /dev/sda: 805.3 GB, 805306368000 bytes, 1572864000 sectors
+Units = sectors of 1 * 512 = 512 bytes
+Sector size (logical/physical): 512 bytes / 512 bytes
+I/O size (minimum/optimal): 512 bytes / 512 bytes
+Disk label type: dos
+Disk identifier: 0x00083a8c
+
+   Device Boot      Start         End      Blocks   Id  System
+/dev/sda1   *        2048      206847      102400   83  Linux
+/dev/sda2          206848    30926847    15360000   83  Linux
+/dev/sda3        30926848    39315455     4194304   82  Linux swap / Solaris
+/dev/sda4        39315456  1572863999   766774272    5  Extended
+/dev/sda5        39317504    39317507           2   83  Linux
+/dev/sda6        39321600    49807359     5242880   83  Linux
+/dev/sda7        49809408  1572863999   761527296   83  Linux
+/dev/sda8        39319556    39321599        1022   83  Linux
+
+Partition table entries are not in disk order
+You have new mail in /var/spool/mail/root
+[root@localhost ~]# 
+[root@localhost ~]# 
+[root@localhost ~]# mkfs.ext4 /dev/sda4
+mke2fs 1.42.9 (28-Dec-2013)
+mkfs.ext4: inode_size (128) * inodes_count (0) too big for a
+	filesystem with 0 blocks, specify higher inode_ratio (-i)
+	or lower inode count (-N).
+
+[root@localhost ~]# mkfs.ext4 /dev/sda5
+mke2fs 1.42.9 (28-Dec-2013)
+mkfs.ext4: inode_size (128) * inodes_count (0) too big for a
+	filesystem with 0 blocks, specify higher inode_ratio (-i)
+	or lower inode count (-N).
+
+[root@localhost ~]# 
+[root@localhost ~]# mkfs.vfat /dev/sda6
+mkfs.fat 3.0.20 (12 Jun 2013)
+[root@localhost ~]# 
+[root@localhost ~]# mkfs.xfs /dev/sda7
+meta-data=/dev/sda7              isize=512    agcount=4, agsize=47595456 blks
+         =                       sectsz=512   attr=2, projid32bit=1
+         =                       crc=1        finobt=0, sparse=0
+data     =                       bsize=4096   blocks=190381824, imaxpct=25
+         =                       sunit=0      swidth=0 blks
+naming   =version 2              bsize=4096   ascii-ci=0 ftype=1
+log      =internal log           bsize=4096   blocks=92959, version=2
+         =                       sectsz=512   sunit=0 blks, lazy-count=1
+realtime =none                   extsz=4096   blocks=0, rtextents=0
+[root@localhost ~]# 
+[root@localhost ~]# 
+[root@localhost ~]# mkdir /dir1 /dir2 /dir3
+[root@localhost ~]# 
+[root@localhost ~]# mount /dev/sda4 /dir1
+mount: /dev/sda4 is write-protected, mounting read-only
+mount: wrong fs type, bad option, bad superblock on /dev/sda4,
+       missing codepage or helper program, or other error
+
+       In some cases useful info is found in syslog - try
+       dmesg | tail or so.
+[root@localhost ~]# mount /dev/sda5 /dir1
+mount: /dev/sda5 is write-protected, mounting read-only
+mount: wrong fs type, bad option, bad superblock on /dev/sda5,
+       missing codepage or helper program, or other error
+
+       In some cases useful info is found in syslog - try
+       dmesg | tail or so.
+[root@localhost ~]# 
+[root@localhost ~]# 
+[root@localhost ~]# fdisk -l
+
+Disk /dev/sda: 805.3 GB, 805306368000 bytes, 1572864000 sectors
+Units = sectors of 1 * 512 = 512 bytes
+Sector size (logical/physical): 512 bytes / 512 bytes
+I/O size (minimum/optimal): 512 bytes / 512 bytes
+Disk label type: dos
+Disk identifier: 0x00083a8c
+
+   Device Boot      Start         End      Blocks   Id  System
+/dev/sda1   *        2048      206847      102400   83  Linux
+/dev/sda2          206848    30926847    15360000   83  Linux
+/dev/sda3        30926848    39315455     4194304   82  Linux swap / Solaris
+/dev/sda4        39315456  1572863999   766774272    5  Extended
+/dev/sda5        39317504    39317507           2   83  Linux
+/dev/sda6        39321600    49807359     5242880   83  Linux
+/dev/sda7        49809408  1572863999   761527296   83  Linux
+/dev/sda8        39319556    39321599        1022   83  Linux
+
+Partition table entries are not in disk order
+[root@localhost ~]# 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+[root@localhost ~]# fdisk /dev/sda
+Welcome to fdisk (util-linux 2.23.2).
+
+Changes will remain in memory only, until you decide to write them.
+Be careful before using the write command.
+
+
+Command (m for help): p
+
+Disk /dev/sda: 805.3 GB, 805306368000 bytes, 1572864000 sectors
+Units = sectors of 1 * 512 = 512 bytes
+Sector size (logical/physical): 512 bytes / 512 bytes
+I/O size (minimum/optimal): 512 bytes / 512 bytes
+Disk label type: dos
+Disk identifier: 0x00083a8c
+
+   Device Boot      Start         End      Blocks   Id  System
+/dev/sda1   *        2048      206847      102400   83  Linux
+/dev/sda2          206848    30926847    15360000   83  Linux
+/dev/sda3        30926848    39315455     4194304   82  Linux swap / Solaris
+/dev/sda4        39315456  1572863999   766774272    5  Extended
+/dev/sda5        39317504    39317507           2   83  Linux
+/dev/sda6        39321600    49807359     5242880   83  Linux
+/dev/sda7        49809408  1572863999   761527296   83  Linux
+/dev/sda8        39319556    39321599        1022   83  Linux
+
+Partition table entries are not in disk order
+
+Command (m for help): d
+Partition number (1-8, default 8): 
+Partition 8 is deleted
+
+Command (m for help): d
+Partition number (1-7, default 7): 
+Partition 7 is deleted
+
+Command (m for help): d
+Partition number (1-6, default 6): 
+Partition 6 is deleted
+
+Command (m for help): d
+Partition number (1-5, default 5): 
+Partition 5 is deleted
+
+Command (m for help): w
+The partition table has been altered!
+
+Calling ioctl() to re-read partition table.
+
+WARNING: Re-reading the partition table failed with error 16: Device or resource busy.
+The kernel still uses the old table. The new table will be used at
+the next reboot or after you run partprobe(8) or kpartx(8)
+Syncing disks.
+[root@localhost ~]# partprobe 
+Warning: Unable to open /dev/sr0 read-write (Read-only file system).  /dev/sr0 has been opened read-only.
+[root@localhost ~]# fdisk -l
+
+Disk /dev/sda: 805.3 GB, 805306368000 bytes, 1572864000 sectors
+Units = sectors of 1 * 512 = 512 bytes
+Sector size (logical/physical): 512 bytes / 512 bytes
+I/O size (minimum/optimal): 512 bytes / 512 bytes
+Disk label type: dos
+Disk identifier: 0x00083a8c
+
+   Device Boot      Start         End      Blocks   Id  System
+/dev/sda1   *        2048      206847      102400   83  Linux
+/dev/sda2          206848    30926847    15360000   83  Linux
+/dev/sda3        30926848    39315455     4194304   82  Linux swap / Solaris
+/dev/sda4        39315456  1572863999   766774272    5  Extended
+[root@localhost ~]# 
+[root@localhost ~]# 
+[root@localhost ~]# fdisk /dev/sda5
+fdisk: cannot open /dev/sda5: No such file or directory
+[root@localhost ~]# fdisk /dev/sda
+Welcome to fdisk (util-linux 2.23.2).
+
+Changes will remain in memory only, until you decide to write them.
+Be careful before using the write command.
+
+
+Command (m for help): n
+All primary partitions are in use
+Adding logical partition 5
+First sector (39317504-1572863999, default 39317504): 
+Using default value 39317504
+Last sector, +sectors or +size{K,M,G} (39317504-1572863999, default 1572863999): +2G
+Partition 5 of type Linux and of size 2 GiB is set
+
+Command (m for help): p
+
+Disk /dev/sda: 805.3 GB, 805306368000 bytes, 1572864000 sectors
+Units = sectors of 1 * 512 = 512 bytes
+Sector size (logical/physical): 512 bytes / 512 bytes
+I/O size (minimum/optimal): 512 bytes / 512 bytes
+Disk label type: dos
+Disk identifier: 0x00083a8c
+
+   Device Boot      Start         End      Blocks   Id  System
+/dev/sda1   *        2048      206847      102400   83  Linux
+/dev/sda2          206848    30926847    15360000   83  Linux
+/dev/sda3        30926848    39315455     4194304   82  Linux swap / Solaris
+/dev/sda4        39315456  1572863999   766774272    5  Extended
+/dev/sda5        39317504    43511807     2097152   83  Linux
+
+Command (m for help): n
+All primary partitions are in use
+Adding logical partition 6
+First sector (43513856-1572863999, default 43513856): 
+Using default value 43513856
+Last sector, +sectors or +size{K,M,G} (43513856-1572863999, default 1572863999): +3G
+Partition 6 of type Linux and of size 3 GiB is set
+
+Command (m for help): p
+
+Disk /dev/sda: 805.3 GB, 805306368000 bytes, 1572864000 sectors
+Units = sectors of 1 * 512 = 512 bytes
+Sector size (logical/physical): 512 bytes / 512 bytes
+I/O size (minimum/optimal): 512 bytes / 512 bytes
+Disk label type: dos
+Disk identifier: 0x00083a8c
+
+   Device Boot      Start         End      Blocks   Id  System
+/dev/sda1   *        2048      206847      102400   83  Linux
+/dev/sda2          206848    30926847    15360000   83  Linux
+/dev/sda3        30926848    39315455     4194304   82  Linux swap / Solaris
+/dev/sda4        39315456  1572863999   766774272    5  Extended
+/dev/sda5        39317504    43511807     2097152   83  Linux
+/dev/sda6        43513856    49805311     3145728   83  Linux
+
+Command (m for help): n
+All primary partitions are in use
+Adding logical partition 7
+First sector (49807360-1572863999, default 49807360): 
+Using default value 49807360
+Last sector, +sectors or +size{K,M,G} (49807360-1572863999, default 1572863999): 
+Using default value 1572863999
+Partition 7 of type Linux and of size 726.3 GiB is set
+
+Command (m for help): w
+The partition table has been altered!
+
+Calling ioctl() to re-read partition table.
+
+WARNING: Re-reading the partition table failed with error 16: Device or resource busy.
+The kernel still uses the old table. The new table will be used at
+the next reboot or after you run partprobe(8) or kpartx(8)
+Syncing disks.
+[root@localhost ~]# partprobe
+Warning: Unable to open /dev/sr0 read-write (Read-only file system).  /dev/sr0 has been opened read-only.
+[root@localhost ~]# 
+[root@localhost ~]# 
+[root@localhost ~]# mkfs.ext4 /dev/sda5
+mke2fs 1.42.9 (28-Dec-2013)
+Filesystem label=
+OS type: Linux
+Block size=4096 (log=2)
+Fragment size=4096 (log=2)
+Stride=0 blocks, Stripe width=0 blocks
+131072 inodes, 524288 blocks
+26214 blocks (5.00%) reserved for the super user
+First data block=0
+Maximum filesystem blocks=536870912
+16 block groups
+32768 blocks per group, 32768 fragments per group
+8192 inodes per group
+Superblock backups stored on blocks: 
+	32768, 98304, 163840, 229376, 294912
+
+Allocating group tables: done                            
+Writing inode tables: done                            
+Creating journal (16384 blocks): done
+Writing superblocks and filesystem accounting information: done 
+
+[root@localhost ~]# mkfs.vfat /dev/sda6
+mkfs.fat 3.0.20 (12 Jun 2013)
+[root@localhost ~]# 
+[root@localhost ~]# mkfs.xfs /dev/sda7
+mkfs.xfs: /dev/sda7 appears to contain a partition table (dos).
+mkfs.xfs: Use the -f option to force overwrite.
+[root@localhost ~]# mkfs.xfs /dev/sda7
+mkfs.xfs: /dev/sda7 appears to contain a partition table (dos).
+mkfs.xfs: Use the -f option to force overwrite.
+[root@localhost ~]# fdisk -l
+
+Disk /dev/sda: 805.3 GB, 805306368000 bytes, 1572864000 sectors
+Units = sectors of 1 * 512 = 512 bytes
+Sector size (logical/physical): 512 bytes / 512 bytes
+I/O size (minimum/optimal): 512 bytes / 512 bytes
+Disk label type: dos
+Disk identifier: 0x00083a8c
+
+   Device Boot      Start         End      Blocks   Id  System
+/dev/sda1   *        2048      206847      102400   83  Linux
+/dev/sda2          206848    30926847    15360000   83  Linux
+/dev/sda3        30926848    39315455     4194304   82  Linux swap / Solaris
+/dev/sda4        39315456  1572863999   766774272    5  Extended
+/dev/sda5        39317504    43511807     2097152   83  Linux
+/dev/sda6        43513856    49805311     3145728   83  Linux
+/dev/sda7        49807360  1572863999   761528320   83  Linux
+[root@localhost ~]# 
+[root@localhost ~]# mkfs.ext4 /dev/sda7
+mke2fs 1.42.9 (28-Dec-2013)
+Filesystem label=
+OS type: Linux
+Block size=4096 (log=2)
+Fragment size=4096 (log=2)
+Stride=0 blocks, Stripe width=0 blocks
+47595520 inodes, 190382080 blocks
+9519104 blocks (5.00%) reserved for the super user
+First data block=0
+Maximum filesystem blocks=2338324480
+5810 block groups
+32768 blocks per group, 32768 fragments per group
+8192 inodes per group
+Superblock backups stored on blocks: 
+	32768, 98304, 163840, 229376, 294912, 819200, 884736, 1605632, 2654208, 
+	4096000, 7962624, 11239424, 20480000, 23887872, 71663616, 78675968, 
+	102400000
+
+Allocating group tables: done                            
+Writing inode tables: done                            
+Creating journal (32768 blocks): done
+Writing superblocks and filesystem accounting information: done     
+
+[root@localhost ~]# 
+[root@localhost ~]# 
+[root@localhost ~]# 
+[root@localhost ~]# mkdir /dir1 /dir2 /dir3
+mkdir: cannot create directory ‘/dir1’: File exists
+mkdir: cannot create directory ‘/dir2’: File exists
+mkdir: cannot create directory ‘/dir3’: File exists
+[root@localhost ~]# 
+[root@localhost ~]# 
+[root@localhost ~]# mount /dev/sda5 /dir1
+[root@localhost ~]# mount /dev/sda6 /dir2
+[root@localhost ~]# mount /dev/sda7 /dir3
+[root@localhost ~]# 
+[root@localhost ~]# df -hT
+Filesystem     Type      Size  Used Avail Use% Mounted on
+/dev/sda2      xfs        15G  3.8G   11G  26% /
+devtmpfs       devtmpfs  1.9G     0  1.9G   0% /dev
+tmpfs          tmpfs     1.9G     0  1.9G   0% /dev/shm
+tmpfs          tmpfs     1.9G   13M  1.9G   1% /run
+tmpfs          tmpfs     1.9G     0  1.9G   0% /sys/fs/cgroup
+/dev/sda1      xfs        97M   75M   22M  78% /boot
+tmpfs          tmpfs     378M  8.0K  378M   1% /run/user/42
+tmpfs          tmpfs     378M   40K  378M   1% /run/user/1000
+/dev/sr0       iso9660   4.2G  4.2G     0 100% /run/media/karthik/RHEL-7.6 Server.x86_64
+tmpfs          tmpfs     378M     0  378M   0% /run/user/0
+/dev/sda5      ext4      2.0G  6.0M  1.8G   1% /dir1
+/dev/sda6      vfat      3.0G  4.0K  3.0G   1% /dir2
+/dev/sda7      ext4      715G   73M  679G   1% /dir3
+[root@localhost ~]# 
+[root@localhost ~]# 
+[root@localhost ~]# vim /etc/fstab
+[root@localhost ~]# 

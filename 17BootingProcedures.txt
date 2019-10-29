@@ -1,0 +1,71 @@
+
+
+							Booting Procedure
+						   ===========================
+
+
+					Start
+				      ---------
+					  |
+					  |
+		-------->  Detect Source of the Hardware
+		|			  |
+		|			  |
+		|---------------- Boot Loader (GRUB)
+					  |
+					  |
+ 			 --------------------------------------
+			|					|
+			|					|
+		       MBR  <------------------------------- Kernal
+								|
+								|
+							       HDD							
+								|
+								|
+							    init Script	
+								|
+								|
+							    /etc/fstab		
+
+
+- As soon as we press start button, Our OS detects detects the Source of the Hardware, Boot Loader is a Software which detects Hardware,
+  Then Master Boot Recorder [MBR] contains the Data of Hard Disk, these MBR use for Partition of Hard disk,
+  kernal fetchs all the Data inside the MBR, Basically the function of Kernal is, inputs given by the user is given to the shell, here input is converted to
+  Machine language by kernal and finally kernal gets the output from Shell and pass the information to Hard Disk,
+  init script initializes all the files for booting process, and finally all the mounting the partition is from /etc/fstab
+
+
+
+- Machine is Powered On, System Firmware runs a Power On Self Test [POST] and starts to initialize some of the hardware.
+- System Firmware searchs for a bootable device either configured in UEFI Boot Firmware or by searchs MBR on all discs.
+- System Firmware reads a boot loader from discs, then passes control of the boot loader. Typically GRUB2 [Grand Unified Boot Loader].
+- The boot loader loads its config from discs and present the user with a menu of possible configurations to boot.
+
+	/etc/grub.d
+	/etc/default/grub
+	/boot/grub2/grub.cfg
+	
+- After the users has made choice the boot loader loads the configured kernal and initramfs from discs and places them in memory using
+	/etc/dracut.conf
+
+- The Boot loader hands over the control system to the kernal passing in any options specified in the kernal command line in the boot loader, 
+  The kernal initializes all the hardware for which it can find a driver in initramfs and executes /sbin/init as PId1
+
+- The systemd instances from the initramfs executes all units for the initrd the target, this includes mounting the actual boot system on/sysroot using /etc/fstab
+
+- The kernal root file system is switched from initramfs root file system to the system root file system that was previously mounted on/sysroot.
+
+- systemd looks for a default target either passed from  kernal command line and starts all the units to complain with the configurations for that 
+  target solving dependencies between the unix automatically.
+
+- /etc/systemd/system/default.target
+	It is a default target i.e CLI or GUI, In Redhat GUI is default.
+
+- /sbin/init	Finds all the drivers and to choose which OS
+
+- on/root	To store root user/password, it is root file which store these.
+
+- /etc/dracut.conf	Stores the Boot loader Information.
+	
+

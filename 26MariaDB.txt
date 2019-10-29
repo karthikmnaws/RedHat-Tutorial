@@ -1,0 +1,93 @@
+
+
+								Maria Database
+								==============
+
+- MariaDB ia a community develop and replace MySql Database.
+
+To install mariadb
+-----------------
+$ cd
+$ yum groupinstall -y mariadb*					// Groupinstall and * is to install respective softwares like mariadbpackage etc
+$ systemctl enable mariadb.service
+$ systemctl start mariadb.service
+$ firewall-cmd --permanent --add-service=mysql
+$ firewall-cmd --reload
+
+To set the root passward in DB
+------------------------------
+
+$ mysql_secure_installation
+		y
+		y
+		y
+		y
+
+To create a DB and load the value
+--------------------------------
+
+$ mysql -u root -p
+$ show databases;
+$ create database LIT;
+$ show databases;
+$ use LIT;
+$ show tables;
+$ create table BTM(sl_no int(10), name varchar(30), course varchar(10));
+$ describe BTM;
+$ insert into BTM(sl_no, name, course) values ('01', 'sam', 'rhcsa');
+$ insert into BTM(sl_no, name, course) values ('02', 'jhon', 'rhce');
+$ insert into BTM(sl_no, name, course) values ('03', 'brad', 'rhcsa');
+$ select * from BTM;
+$ select * from BTM where course = 'rhcsa';
+$ quit
+
+Taking a Backup of DB
+---------------------
+
+$ mysqldump -u root -p LIT >> /root/backup.dump 
+$ ls
+$ cat backup.dump
+
+Restoring DB from Server	( This is Lab Setup, can't practice in our machine )
+------------------------
+
+$ ls /home/student
+$ lab mariadb-restore setup
+$ ls /home/student
+	inventory.dump
+
+To push inventory.dump to our new database jayadeva
+---------------------------------------------------
+
+$ mysql -u root -p
+$ create database jayadeva;
+$ quit
+$ mysql -u root -p jayadeva < /home/student/inventory.dump
+$ mysql -u root -p
+$ show database;
+$ use jayadeva;
+$ show tables;
+$ select * from catagory;
+
+
+How to create Users in DB
+-------------------------
+
+$ create user satish@'%' identified by 'redhat123';				// % => Over the network
+$ create user suma@'localhost' identified by 'redhat123';	
+
+	[SUID]	S = Select	U = Update	I = Insert	D = Delete
+
+$ grant select,update,insert,delete on *,* to satish@'%';
+$ grant select,update,insert,delete on LIT.* to suma@'localhost';		// LIT.* => Database.table
+$ quit
+$ mysql -u suma -p
+$ show database;
+$ use LIT;
+$ show tables;
+$ select * from BTM;
+$ exit
+$ mysql -u satish -p
+$ show database;
+$ exit
+		

@@ -1,0 +1,133 @@
+
+							( Don't try this in your machine )
+								Teaming or NIC Bonding
+							    ==============================
+
+( Assume if we have many NIC card, to make use of these efficiently after working hours, it get wasted, To get maximum utilization we use Teaming)
+
+
+
+1) Bridging
+2) Teaming
+
+1) Bridging
+
+			|-----------|
+			| computer1 |
+			|-----------|
+			| computer2 |
+			|-----------|
+			| computer3 |
+			|-----------|
+
+	Here we have single NIC card, This NIC card is dividing for multiple computers. Ex :: Virtual Machine, VMWare
+
+2) Teaming
+					------------Computer1
+					|
+					|				    	
+		Computer3---------------|
+					|
+					|
+					------------Computer2
+
+	Think we have 2 Computers, and every computer have NIC card. With these 2 NIC card is utilize to create one more NIC card for another computer
+
+
+
+
+
+
+- It is a method of linking mix together logically to allow for failed over or higher through put.
+- Teaming provides btter performance and is more extensible because of its modular design.
+- RHEL7 implements teaming with a small kernal driver and a user space Deamon teamd, kernal handles network packets efficiently and teamd
+  handles logic and interface processing softwares called Runners.
+- Following Runners are
+	* BroadCast
+	* Round Robin
+	* Active backup
+	* Load Balancing
+
+- Broadcast
+  --------
+	A simple runner which transmits each packets from all ports.
+
+
+
+				  |-->	|---------Port1			// Initially both ports are low, make One port high, Another is low
+				  |	|					packets get wasted on another port
+		      ------------|	|			
+		NIC---------------------|
+ 		      ------------|	|
+				  |	|
+				  |-->	|--------Port2	
+
+- Round Robin
+  -----------
+	A simple runner which transmits packet in a round robin fashion from each of all ports.
+
+
+
+				  |-->	|---------Port1			// Initially both ports are high, make One port low
+				  |	|					
+		      ------------|	|			
+		NIC---------------------|
+ 		      ------------|	|
+				  |	|
+				  |-->	|--------Port2	
+
+- Active Backup
+  -------------
+	This is fail over runner, which watches for link changes and selects active port for data transmission.
+
+
+
+				  |-->	|---------Port1			// Either of the port is active always.
+				  |	|					
+		      ------------|	|			
+		NIC---------------------|
+ 		      ------------|	|
+				  |	|
+				  |-->	|--------Port2		
+
+- Load Balancing
+  --------------
+	This Runner monitors traffic and uses a hash function to reach a perfect balance when selecting ports for Data transfer.
+
+
+				  |-->	|---------Port1			 // Both send 5, 5 each to balance.
+			5 packets |	|				
+		      ------------|	|			
+		NIC---------------------|
+ 		      ------------|	|
+				  |	|
+			5 packets |-->	|--------Port2	
+-----------------------------------------------------------------------------------------------------------------------------------------------
+
+- Commands for Active Backup
+  ---------------------------
+
+$ cd
+$ nmcli connection show
+$ nmcli device status
+$ lab teambridge setup
+$ nmcli device status
+$ nmcli connection show
+$ nmcli connection add con-name LIT type team ifname LIT config '{"runner":{"name":"activebackup"}}'
+$ nmcli connection show
+$ nmcli connection add con-name LIT-port1 type team-slave ifname eno1 master LIT
+$ nmcli connection add con-name LIT-port2 type team-slave ifname eno2 master LIT
+$ nmcli connection show
+$ nmcli connection modify LIT ipv4.address '192.168.0.100/24' ipv4.method manual
+$ nmcli connection up LIT
+$ teamdctl LIT state
+$ nmcli device disconnect eno2
+$ teamdctl LIT state
+
+
+
+In VMWare to create multiple card
+$ ifconfig eno0 : <name> <ipaddress1>			// Assign IP address.
+$ ifconfig eno1 : <name> <ipaddress2>
+
+

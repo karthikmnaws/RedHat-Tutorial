@@ -1,0 +1,155 @@
+
+					Swap Memory
+					===========
+			  ( It takes some space from Hard disk )
+
+
+- Assume a Hard disk of 500 rpm, CPU of 2GHz
+	* Speed of CPU is very than speed of Hadrd disk
+	* Give $ ls command,
+	* If CPU reads $ ls command data directly inside HDD, since speed of HDD is less than CPU, CPU cycle get loss, which leads to slow fetching of data.
+	* So, CPU reads from RAM memory.
+	* So, with the help of RAM, which holds temproary data in its memory, leads to fast fetching of data.
+	* If RAM memory is full, it shifts its data to SWAP memory
+	* SWAP memory is alternative to RAM.
+
+- If RAM > 8G(server)    then  SWAP = 2 x RAM     		// our machine itself consider as Server if RAM is more than 8G
+  If RAM < 8G		 then  SWAP = (1/2), (1/3)rd of RAM
+------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+$ fdisk -l
+$ fdisk /dev/sda
+          		create new partition, assume it is create in sda5
+$ partprobe
+$ mkswap /dev/sda5
+$ vim /etc/fstab
+	/dev/sda5	swap	swap	defaults	0 0
+$ mount -a
+$ df -hT		// Here swap mount is not showing, to see use $ swapon -s
+$ free -m		// To check the RAM and SWAP memory
+$ swapon /dev/sda5
+$ swapon -s		// To check swap allocation
+$ free -m
+$ swapoff /dev/sda5
+$ free -m
+----------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+[karthik@localhost ~]$ su -
+Password: 
+Last login: Mon Dec 31 16:10:12 IST 2018 on pts/0
+[root@localhost ~]# 
+[root@localhost ~]# cd /
+[root@localhost /]# 
+[root@localhost /]# 
+[root@localhost /]# fdisk /dev/sda
+Welcome to fdisk (util-linux 2.23.2).
+
+Changes will remain in memory only, until you decide to write them.
+Be careful before using the write command.
+
+
+Command (m for help): p
+
+Disk /dev/sda: 805.3 GB, 805306368000 bytes, 1572864000 sectors
+Units = sectors of 1 * 512 = 512 bytes
+Sector size (logical/physical): 512 bytes / 512 bytes
+I/O size (minimum/optimal): 512 bytes / 512 bytes
+Disk label type: dos
+Disk identifier: 0x00083a8c
+
+   Device Boot      Start         End      Blocks   Id  System
+/dev/sda1   *        2048      206847      102400   83  Linux
+/dev/sda2          206848    30926847    15360000   83  Linux
+/dev/sda3        30926848    39315455     4194304   82  Linux swap / Solaris
+/dev/sda4        39315456  1572863999   766774272    5  Extended
+/dev/sda5        39317504    43511807     2097152   83  Linux
+
+Command (m for help): w
+The partition table has been altered!
+
+Calling ioctl() to re-read partition table.
+
+WARNING: Re-reading the partition table failed with error 16: Device or resource busy.
+The kernel still uses the old table. The new table will be used at
+the next reboot or after you run partprobe(8) or kpartx(8)
+Syncing disks.
+[root@localhost /]# mkswap /dev/sda
+/dev/sda: Device or resource busy
+[root@localhost /]# 
+[root@localhost /]# mkswap /dev/sda4
+mkswap: error: swap area needs to be at least 40 KiB
+
+Usage:
+ mkswap [options] device [size]
+
+Options:
+ -c, --check               check bad blocks before creating the swap area
+ -f, --force               allow swap size area be larger than device
+ -p, --pagesize SIZE       specify page size in bytes
+ -L, --label LABEL         specify label
+ -v, --swapversion NUM     specify swap-space version number
+ -U, --uuid UUID           specify the uuid to use
+ -V, --version             output version information and exit
+ -h, --help                display this help and exit
+
+[root@localhost /]# mkswap /dev/sda5
+mkswap: /dev/sda5: warning: wiping old LVM2_member signature.
+Setting up swapspace version 1, size = 2097148 KiB
+no label, UUID=5a200297-a78c-47e8-9e95-a2f3531885f1
+[root@localhost /]# 
+[root@localhost /]# vim /etc/fstab
+[root@localhost /]# mount -a
+[root@localhost /]# 
+[root@localhost /]# df -hT
+Filesystem     Type      Size  Used Avail Use% Mounted on
+/dev/sda2      xfs        15G  3.8G   11G  26% /
+devtmpfs       devtmpfs  1.9G     0  1.9G   0% /dev
+tmpfs          tmpfs     1.9G     0  1.9G   0% /dev/shm
+tmpfs          tmpfs     1.9G   13M  1.9G   1% /run
+tmpfs          tmpfs     1.9G     0  1.9G   0% /sys/fs/cgroup
+/dev/sda1      xfs        97M   75M   22M  78% /boot
+tmpfs          tmpfs     378M   24K  378M   1% /run/user/1000
+/dev/sr0       iso9660   4.2G  4.2G     0 100% /run/media/karthik/RHEL-7.6 Server.x86_64
+[root@localhost /]# 
+[root@localhost /]# free -m
+              total        used        free      shared  buff/cache   available
+Mem:           3771         739        2319          15         712        2728
+Swap:          4095           0        4095
+[root@localhost /]# 
+[root@localhost /]# swapon /dev/sda5
+[root@localhost /]# 
+[root@localhost /]# free -m
+              total        used        free      shared  buff/cache   available
+Mem:           3771         741        2317          15         712        2726
+Swap:          6143           0        6143
+[root@localhost /]# 
+[root@localhost /]# df -hT
+Filesystem     Type      Size  Used Avail Use% Mounted on
+/dev/sda2      xfs        15G  3.8G   11G  26% /
+devtmpfs       devtmpfs  1.9G     0  1.9G   0% /dev
+tmpfs          tmpfs     1.9G     0  1.9G   0% /dev/shm
+tmpfs          tmpfs     1.9G   13M  1.9G   1% /run
+tmpfs          tmpfs     1.9G     0  1.9G   0% /sys/fs/cgroup
+/dev/sda1      xfs        97M   75M   22M  78% /boot
+tmpfs          tmpfs     378M   24K  378M   1% /run/user/1000
+/dev/sr0       iso9660   4.2G  4.2G     0 100% /run/media/karthik/RHEL-7.6 Server.x86_64
+[root@localhost /]# 
+[root@localhost /]# swapoff /dev/sda5
+[root@localhost /]# 
+[root@localhost /]# free -m
+              total        used        free      shared  buff/cache   available
+Mem:           3771         741        2317          15         712        2726
+Swap:          4095           0        4095
+[root@localhost /]# swapon -s
+Filename				Type		Size	Used	Priority
+/dev/sda3                              	partition	4194300	0	-2
+[root@localhost /]# swapon /dev/sda5
+[root@localhost /]# 
+[root@localhost /]# swapon -s
+Filename				Type		Size	Used	Priority
+/dev/sda3                              	partition	4194300	0	-2
+/dev/sda5                              	partition	2097148	0	-3
+[root@localhost /]# 
+
+				

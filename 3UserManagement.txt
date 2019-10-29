@@ -1,0 +1,78 @@
+
+			User Management
+			----------------
+- Users are anybody who has valid credentials to login to machine. Every file or Directory should have a owner defined by users.
+
+User
+-------
+   1) Admin Users             Uid = 0   example = root
+
+   2) Non-admin Users	
+      
+	a) System Users      1 - 999
+	b) Normal Users	     1000 - 60000      	    
+
+- Admin Users
+  -----------
+	These are the users created by the Operating System while it is loading.
+	They will have more previlages compare to all other users
+	Uid = 0
+	Example = root
+
+- System Users
+  -----------
+	These are the user accounts created by O.S mainly to authenticate a process.
+	System users cannot be used to loged into the machine.
+	Uid = 1 - 999
+
+- Normal Users 
+  -------------
+	These are the user accounts created by the administrators mainly to authenticate a machine.
+	Uid = 1000 - 60000
+----------------------------------------------------------------------------------------------------------
+
+	Files and Directories corresponding to User Management
+	------------------------------------------------------
+
+- $ /etc/passwd
+	File responsible for User login details
+
+- $ /etc/shadow
+	File responsible for User password management details
+
+- $ /etc/login.defs
+	File responsible for User id creation.
+
+- $ /etc/skel
+	Directory responsible for user profile.
+-------------------------------------------------------------------------------------------------------------
+
+- To create any user
+	$ adduser <option> <username>
+
+- To create password
+	$ passwd <username>
+
+- To delete the use account keeping the home directory active.
+	$ userdel <username>
+
+- To delete the user along with home directory.
+	$ userdel -r <username>
+-------------------------------------------------------------------------------------------------------------
+
+- $ /etc/passwd
+  ---------------
+	Username : uid : gid : gecos : home directory : default login shell
+	Username : -u  : gid : -c    : -d             : -s
+
+	gecos = Nick Name to User
+
+[karthik@localhost ~]$ su -
+Password: 
+Last login: Tue Dec  4 03:30:36 EST 2018 on pts/0
+[root@localhost ~]# 
+[root@localhost ~]# 
+[root@localhost ~]# adduser -u 2000 -c bad_boy -d /etc/bad -s /bin/csh bad
+[root@localhost ~]# 
+
+	

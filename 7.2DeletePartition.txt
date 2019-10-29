@@ -1,0 +1,101 @@
+
+$ fdisk -l
+$ p
+$ d
+$ p
+$ w
+$ partprobe
+$ fdisk -l
+$ vim /etc/fstab
+
+
+[root@localhost ~]# fdisk -l
+
+Disk /dev/sda: 805.3 GB, 805306368000 bytes, 1572864000 sectors
+Units = sectors of 1 * 512 = 512 bytes
+Sector size (logical/physical): 512 bytes / 512 bytes
+I/O size (minimum/optimal): 512 bytes / 512 bytes
+Disk label type: dos
+Disk identifier: 0x00083a8c
+
+   Device Boot      Start         End      Blocks   Id  System
+/dev/sda1   *        2048      206847      102400   83  Linux
+/dev/sda2          206848    30926847    15360000   83  Linux
+/dev/sda3        30926848    39315455     4194304   82  Linux swap / Solaris
+/dev/sda4        39315456  1572863999   766774272    5  Extended
+/dev/sda5        39317504    43511807     2097152   83  Linux
+/dev/sda6        43513856    49805311     3145728   83  Linux
+/dev/sda7        49807360  1572863999   761528320   83  Linux
+[root@localhost ~]# fdisk /dev/sda
+Welcome to fdisk (util-linux 2.23.2).
+
+Changes will remain in memory only, until you decide to write them.
+Be careful before using the write command.
+
+Command (m for help): p
+
+Disk /dev/sda: 805.3 GB, 805306368000 bytes, 1572864000 sectors
+Units = sectors of 1 * 512 = 512 bytes
+Sector size (logical/physical): 512 bytes / 512 bytes
+I/O size (minimum/optimal): 512 bytes / 512 bytes
+Disk label type: dos
+Disk identifier: 0x00083a8c
+
+   Device Boot      Start         End      Blocks   Id  System
+/dev/sda1   *        2048      206847      102400   83  Linux
+/dev/sda2          206848    30926847    15360000   83  Linux
+/dev/sda3        30926848    39315455     4194304   82  Linux swap / Solaris
+/dev/sda4        39315456  1572863999   766774272    5  Extended
+/dev/sda5        39317504    43511807     2097152   83  Linux
+/dev/sda6        43513856    49805311     3145728   83  Linux
+/dev/sda7        49807360  1572863999   761528320   83  Linux
+
+Command (m for help): d
+Partition number (1-7, default 7): 4
+Partition 4 is deleted
+
+Command (m for help): p
+
+Disk /dev/sda: 805.3 GB, 805306368000 bytes, 1572864000 sectors
+Units = sectors of 1 * 512 = 512 bytes
+Sector size (logical/physical): 512 bytes / 512 bytes
+I/O size (minimum/optimal): 512 bytes / 512 bytes
+Disk label type: dos
+Disk identifier: 0x00083a8c
+
+   Device Boot      Start         End      Blocks   Id  System
+/dev/sda1   *        2048      206847      102400   83  Linux
+/dev/sda2          206848    30926847    15360000   83  Linux
+/dev/sda3        30926848    39315455     4194304   82  Linux swap / Solaris
+
+Command (m for help): w
+The partition table has been altered!
+
+Calling ioctl() to re-read partition table.
+
+WARNING: Re-reading the partition table failed with error 16: Device or resource busy.
+The kernel still uses the old table. The new table will be used at
+the next reboot or after you run partprobe(8) or kpartx(8)
+Syncing disks.
+
+[root@localhost ~]# partprobe
+Error: Partition(s) 5, 6, 7 on /dev/sda have been written, but we have been unable to inform the kernel of the change, probably because it/they are in use.  As a result, the old partition(s) will remain in use.  You should reboot now before making further changes.
+Warning: Unable to open /dev/sr0 read-write (Read-only file system).  /dev/sr0 has been opened read-only.
+
+[root@localhost ~]# fdisk -l
+
+Disk /dev/sda: 805.3 GB, 805306368000 bytes, 1572864000 sectors
+Units = sectors of 1 * 512 = 512 bytes
+Sector size (logical/physical): 512 bytes / 512 bytes
+I/O size (minimum/optimal): 512 bytes / 512 bytes
+Disk label type: dos
+Disk identifier: 0x00083a8c
+
+   Device Boot      Start         End      Blocks   Id  System
+/dev/sda1   *        2048      206847      102400   83  Linux
+/dev/sda2          206848    30926847    15360000   83  Linux
+/dev/sda3        30926848    39315455     4194304   82  Linux swap / Solaris
+
+[root@localhost ~]# vim /etc/fstab
+
+

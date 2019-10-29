@@ -1,0 +1,157 @@
+
+
+						Partitions
+					     ===============
+
+- It is a process of dividing the hard disk into sub parts logically.
+
+- Advantages of Partitions are
+	* Maximum utilization of disk space
+	* Different file system can be assigned in the partition.
+	* Redundency(copying) is possible
+
+- Two types of Partitions are
+	1. Standard
+		a. MBR [Master Boot Record]
+		b. GPT [GUID Partition Table]
+	2. LVM
+
+Features of MBR are
+-------------------
+	- we can create 15 partition, 3 Primary and 1 Extended
+	- In Extended partition, we can create 11 logical partitions, Each Partition size should not more than 2TB.
+	- File System Information is stored at the first and last sector of the disk.
+
+Features of GPT are
+-------------------
+	We can create 128 Partitions, each Partitions are not more than 8ZiB ( 8x10^(25) B ).
+
+------------------------------------------------------------------------------------------------------
+
+- We have fdisk, gdisk, Parted, and gParted tools to create Partition.
+
+- fdisk by default create Partitions by MBR, where as gdisk, parted and gParted creats partitions by GPT.     
+
+-----------------------------------------------------------------------------------------------------------------------------------------------------------
+
+3 Important steps in creating a Standard Partition
+------------------------------------------------
+	* Raw Disk 
+	* File system
+	* Block Device
+
+Raw Disk
+---------
+
+$ fdisk -l		// To list Partition Table
+$ fdisk /dev/sda	// To Manage Partitions in SDA
+m			// Help Option
+p			// To Print the partition table
+n			// To create Partition
+
+Note::	We should not assign any partition to Extended, because it cannot be Format or even Mount.
+------
+
+partprobe		// To update
+
+File System
+---------------
+	Segregated and allignment. Like assigning Uniform in school for different class 
+
+$ mkfs.ext4		// Make File System for File System 4
+$ mkfs.vfat
+$ mkfs.xfs
+
+Block Device (Mounting)
+----------------------
+Temporary Mounting
+------------------
+$ mount /dev/sda4 /dir1		//Now contents of dir1 is store in sda4
+
+$ df -hT		// TO verify mounting
+
+Note:: To make mounting parmanent, update mounting info to /etc/fstab
+
+Permanent Mounting
+-----------------
+$ vim /etc/fstab				     fdump  fsck
+	/dev/sda5	/dir1	ext4	defaults	0    0		
+	/dev/sda6	/dir2	vfat	defaults	0    0
+	/dev/sda7 	/dir3	xfs	defaults	0    0
+
+Assume 1000 inodes, 23 Block is created
+
+default
+---------
+	By Default means read/write for all users
+
+fsdump(File System Dump)
+----------------------
+	It has two values, if it is '0', not to take Back Up of File system.
+				    '1', takes a Back Up of File System.
+
+fsck(file system consistency check)
+-----------------------------------
+	It has 3 values 0,1 and 2, if it '0', it doesn't check file system consistency for a perticular device.
+					 '1', it check the fsck in aan Order.
+					 '2', it checks file system consistency for all device in a single shot.
+
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+			Logical Volume Management [LVM]
+			-------------------------------
+
+- In Physical (Standard) Partition we cannot increase/decrease size/volume of Partition, but in LVM it is flexible.
+
+
+	| ----------------|	 |-----------------------------------------------------|
+	| -------------	  |	 |						       |
+	| | /dev/vdb5 |	--|----	 |  						       |	
+	| -------------	  |   |	 |  						       |
+	|		  |   |	 |   |-------|		|-----------------------|      |
+	| -------------	  |   ---|-->|	PV1  |--------->|		  ------|      |	
+	| | /dev/vdb6 |	  |	 |   |-------|		|		  |****-|--LV2 |
+	| ------------- --|----  |			|	VG	  |----	|      |
+	|		  |   |	 |   |-------|		|	---------	|      |
+	| -------------	  |   |--|-->|	PV2  |--------->|	| *****	|	|      |
+	| | /dev/vdb7 |	  |	 |   |-------|		|-------|---|---|------ |      |
+	| -------------   |      |				    |		       |
+	|		  |	 |				    LV1		       |	
+	|-----------------|	 |-----------------------------------------------------|
+	 Physical Disk			Logical Volume Manager
+
+PV1 = Physical Volume 1	
+PV2 = Physical Volume 2						    
+VG  = Volume Group
+LV1 = Logical Volume 1									
+LV2 = Logical Volume 2
+
+- It is a mechanism of virtualizating the disk. Objects involved in LVM are called LVM objects.
+
+- Physical Volume
+  --------------
+	Converting a normal Raw Partition into Physical volume by assigning a Physical ID.
+
+- Volume Group
+  -------------
+	It is a combination of Two or more Physical Volumes.
+
+- Logical volumes
+  --------------
+	It is a partition created under VG.
+
+- Extent
+  ------
+	It is a sub partition under the Partition, default value of  1 extent is 4 Mb.
+
+	      3Gb
+	<-------------------->
+
+	---------------------			3Gb == 3000 Mb       3000 Mb
+	|    |    |    |    |					    ---------	= 750
+	---------------------   					4 Mb
+	|    |****|    |    |
+	--------|------------				750 Extent == 3 Gb
+		|
+		----> 1 Extent = 4Mb
+------------------------------------------------------------------------------------------------------------------------------------------------------	

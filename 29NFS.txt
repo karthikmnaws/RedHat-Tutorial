@@ -1,0 +1,180 @@
+
+								Network File Sharing [NFS]
+								==========================
+
+- It is a file sharing mechanism used by unix systems and Network attached storage devices to allow multiple clients to share access to files over the network.
+	One or more Clients can be listed for below
+
+1. DNS resolvable hostname
+	/dir1	<ip address of the machine>
+
+2. DNS resolvable hostname with wild card
+	/dir1   <*.example.com>
+
+3. DNS resolvable hostname with character class listed in square brackets.
+	/dir1	<server[0-20].example.com>
+
+4. A directory eported to multiple hosts
+	/ dir1	*.example.com	172.25	127.0
+
+==========================================================================================================================================================
+		
+						Read Only Permission for Files
+						-------------------------------
+							Server Side
+							===========
+					
+$ cd
+$ yum install -y nfs-utils
+$ systemctl enable nfs-server.service
+$ systemctl start nfs-server.service
+$ mkdir /dir1
+$ touch /dir1/file{1..5}
+$ vim /etc/exports
+	/dir1	*.example.com(rw,sync)
+$ exportfs -r
+$ firewall-cmd --permanent --add-service=nfs
+$ firewall-cmd --reload
+$ systemctl restart nfs-server.service
+
+							Desktop Side
+							============
+
+$ cd
+$ yum install -y nfs-utils
+$ mkdir /mnt/nfs1
+$ vim /etc/fstab
+	server0.example.com:/dir1	/mnt/nfs1	nfs	defaults	0 0
+
+$ mount -a
+$ df -ht
+$ cd /mnt/nfs1
+$ ls
+$ cat >> file2	
+$ touch file10				// It cannot create since only read option
+================================================================================================================================================================
+
+Export Options
+==============
+* ro = read only
+   --------------
+	Defaults setting when nothing is specified. It explicitely ristricts the nfs clients to read files on the share.
+
+* rw = read write
+  ---------------
+	Allows read and write access for nfs clients.
+
+* no_root_squash
+  --------------
+	By defaults root on nfs clients is treated as user nfs nobody by nfs server.
+=================================================================================================================================================================
+
+								Read Write Permission for Files
+								-------------------------------
+									Server Side
+									-----------
+
+$ cd 
+$ mkdir /nfsdir1
+$ touch /nfsdir1/file{1..5}
+$ vim /etc/exports
+	##/dir1 	*.example.com(rw,sync)
+	/nfsdir1	*.example.com(rw,no_root_squash)
+$ exports -r
+$ firewall -cmd --reload
+$ systemctl restart nfs-server.service
+
+									Desktop Side
+									-------------
+
+$ unmount /mount/nfs1
+$ cd
+$ df -ht
+$ mkdir /mnt/nfs2
+$ vim /etc/fstab
+	##server0.example.com:/dir1	/mnt/nfs1	nfs	defaults	0 0
+	server0.example.com:/nfsdir1	/mnt/nfs2	nfs	defaults	0 0
+
+$ mount -a
+$ df -ht
+$ cd /mnt/nfs2
+$ ls
+$ touch file2		//Now it can create
+================================================================================================================================================================
+
+								NFS with Kerberos
+								=================
+
+Security Methods
+================
+
+None
+-----
+	Ananymous access to the files write to the server will be allocated by Uid in Gid of NFS noudy (he is a owner)
+
+Sys
+-----
+	File access is based on Stanndard Linux file permissions for Uid and Gid values.
+
+krb 5
+------
+	Clients must prove identity using kerberos, standard Linux permissions apply.
+
+krb 5i
+------
+	Adds a cryptographically strong gurantee that the data in each request is not damaged.
+
+krb 5p
+------
+	Adds encryption to all the requests between client and server preventing data exposes on the network.
+==============================================================================================================================================================
+
+
+									Server Side
+								--------------------------
+
+ls nfskrb5 setup
+yum install -y nfs-utils
+wget -o /etc/krb5.keytab http://classroom.example.com/pub/keytabs/server0.keytab
+mkdir /dir2
+touch /dir2{1..5}
+vim /etc/exports
+	/nfsdir1	*.example.com(rw,no_root_squash)
+	/dir10		*.example.com(rw, sec = krb5p)
+	/dir2		*.example.com(rw, sec = krb5p)
+
+exportfs -r
+systemctl enable nfs-secure-server
+systemctl restart nfs-secure-server.service
+firewall-cmd --permanent --add-service=nfs
+firewall-cmd --reload
+chown -R ldapuser0 /dir2
+ls -ld dir2/
+ls -l dir2/
+chown -Rt ldapuser0 /dir2
+ls -ld dir2/
+ls -l dir2/
+chown -Rt ldapuser0 /dir2
+cd /dir2
+ls -l
+systemctl restart nfs-secure-server.service
+
+									Desktop Side
+							             --------------------
+
+cd
+lab nfskrb5 setup
+yum install -y nfs-utils
+wget -o /etc/krb5.keytab http://classroom.example.com/pub/keytabs/desktop0.keytab
+mkdir /nfsdir
+vim /etc/fstab
+	server0.example.com:/dir2	/nfsdir	nfs	defaults.sec=krb5p	0 0
+
+systemctl enable nfs-secure
+systemctl restart nfs-secure.service
+mount -a
+df -hT
+cd /nfsdir/
+ls
+touch file10
+ssh ldapuser0@desktop0

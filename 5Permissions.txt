@@ -1,0 +1,568 @@
+			
+					Permissions
+					------------
+
+[root@localhost ~]# touch file1
+[root@localhost ~]# ls -l file1
+-rw-r--r--. 1 root root 0 Dec  4 05:59 file1
+[root@localhost ~]# 
+[root@localhost ~]# mkdir dir1
+[root@localhost ~]# ls -ld dir1
+drwxr-xr-x. 2 root root 6 Dec  4 06:00 dir1
+
+
+- UMASK is a default values for any file or a directory at the time of creation.
+
+				Users(u) Group(g) Others(o) 
+Umask value for root users         0       2        2
+Umask value for normal users       0       0        2
+Max. Permission for a file         6       6        6
+Max. Permission for directories    7       7        7
+
+- Numerical value for 
+	read(r)    = 4
+	write(w)   = 2
+	execute(x) = 1
+----------------------------------------------------------------------
+
+-  Root File (rw-r--r--)
+ --------------------
+
+	rw-    r--   r--
+      4+2+0  4+0+0   4+0+0
+	6      4       4
+
+   666
+(-)022
+--------
+   644
+
+-----------------------------------------------------------------------
+
+-  Root Directory  (drwxr-xr-x)
+ --------------------------
+
+    d  rwx     r-x    r-x
+      4+2+1   4+0+1   4+0+1
+	7       5      5
+
+    777
+ (-)022
+---------
+    755
+
+--------------------------------------------------------------------------
+
+-  Normal User Flie (rw-rw-r--)
+  --------------------
+
+	rw-    rw-   r--
+	
+    666
+ (-)002
+ -------
+    664
+----------------------------------------------------------------------
+
+- Normal User Directory (drwxrwxr-x)
+  -----------------------------------
+
+ 	d rwx  rwx  r-x
+
+    777
+ (-)002
+---------
+    775
+---------------------------------------------------------------------------------	
+
+
+	chmod ( Chamge mode )
+	---------------------	
+
+- For a root user, Permission for a 
+	File is      644
+	Directory is 755
+
+- For a normal user,
+	File is      664
+	Directory is 775
+
+- To add Write permission to a group on a file.
+	$ chmod g+w < file name >	      [ Symbolic Method ]
+	$ chmod 664 < file name >	      [ Numeric Method ]
+
+- Removing Read-Write permissions for a group and read permission for other user on a file.  
+	$ chmod g-rw, o-r < file name >      [ Symbolic Method ]
+	$ chmod 600 < file name >	     [ Numeric Method ]	
+
+[root@localhost ~]# touch file1
+[root@localhost ~]# ls -l file1
+-rw-r--r--. 1 root root 0 Dec  5 23:36 file1
+[root@localhost ~]# chmod g+w,o+w file1
+[root@localhost ~]# ls -l file1
+-rw-rw-rw-. 1 root root 0 Dec  5 23:36 file1
+[root@localhost ~]# 
+[root@localhost ~]# chmod 600 file1
+[root@localhost ~]# ls -l file1
+-rw-------. 1 root root 0 Dec  5 23:36 file1
+[root@localhost ~]# 
+[root@localhost ~]# chmod u+x,go+rwx file1
+[root@localhost ~]# ls -l file1
+-rwxrwxrwx. 1 root root 0 Dec  5 23:36 file1
+
+------------------------------------------------------------------------------------------------------------------------------------
+
+	  |				   |					 |
+ 	  |	       File                |		Directory    		 |
+ ---------|--------------------------------|-------------------------------------|
+ read(r)  | Read the contents in a file    |  List the contents of the diectory  |
+ ---------|--------------------------------|-------------------------------------|
+ write(w) | Edit the contents of the file  |  Modify delete or add contents of   |
+	  |				   |  directory				 |
+ ---------|--------------------------------|-------------------------------------|
+ Execute  | Run the Script 		   |	Recurcively display the contents |
+  (x)     | chmod +x <file name>	   |	of the directory		 |
+          | ./ <file name>  //to run script|	ex: ls -R			 |
+ ---------|--------------------------------|-------------------------------------|
+
+
+- Important Note :
+	Max. Permission for a file is 666, no space for Execute(x), we have to give permission seperately.
+	Because of this reason, Linux can work in Server securly
+
+---------------------------------------------------------------------------------------------------------------------------------------
+
+		Access Control List ( ACL )
+		---------------------------
+
+- Major advantage of ACL is, we can define Permissions for a individual user or a group without disturbing other permissions.
+
+- To display the permission of a file.
+	$ getfacl <file name>
+
+- Set ACL permission for a user.
+	$ setfacl -m u : <user name> : <permission> <file/directory>    // m = modify
+
+- Set ACL permission for a group.
+	$ setfacl -m g : <group name> : <permission> <file/directory>
+
+- To remove ACL permission from a file itself
+	$ setfacl -x u : <user name> : <file/dir>
+
+- To remove Permissions Completely
+	$ setfacl -b <file/dir>
+-------------------------------------------------
+$ su -				// To login as root User
+cd /root
+cd /				//To get into root directory
+touch file8		 	// file8 creates in main root directory
+getfacl file8			// To get info. of file8	
+setfacl -m u:jhon:rwx file8	// To give read, write and execute permission of file file8 to Jhon
+getfacl file8
+ll				// To list all files in root directory
+setfacl -x u:jhon: file8	// To remove permission
+getfacl file8
+ls -l file8
+setfacl -b file8		// To remove permission completely
+getfacl file8
+ll
+------------------------------------------------
+
+[karthik@localhost ~]$ su -
+Password: 
+Last login: Fri Dec  7 08:56:48 IST 2018 on pts/0
+[root@localhost ~]# 
+[root@localhost ~]# adduser jhon
+
+[jhon@localhost ~]$ cd /root
+bash: cd: /root: Permission denied
+[jhon@localhost ~]$ su -
+Password: 
+Last login: Mon Dec 10 09:20:12 IST 2018 on pts/0
+[root@localhost ~]# touch /file1
+[root@localhost ~]# ls
+anaconda-ks.cfg  dir1  file1  initial-setup-ks.cfg
+[root@localhost ~]# touch file5
+[root@localhost ~]# ls
+anaconda-ks.cfg  dir1  file1  file5  initial-setup-ks.cfg
+[root@localhost ~]# touch /file5
+[root@localhost ~]# ls
+anaconda-ks.cfg  dir1  file1  file5  initial-setup-ks.cfg
+[root@localhost ~]# 
+[root@localhost ~]# getfacl file1
+# file: file1
+# owner: root
+# group: root
+user::rwx
+group::rwx
+other::rwx
+
+[root@localhost ~]# ls -l file1
+-rwxrwxrwx. 1 root root 0 Dec  6 10:50 file1
+[root@localhost ~]# 
+[root@localhost ~]# setfacl -m u:jhon:-w- file1
+[root@localhost ~]# 
+[root@localhost ~]# getfacl file1
+# file: file1
+# owner: root
+# group: root
+user::rwx
+user:jhon:-w-
+group::rwx
+mask::rwx				// Getting from database mask
+other::rwx
+
+[root@localhost ~]# ls -ld /root
+dr-xr-x---. 6 root root 263 Dec 10 09:23 /root
+[root@localhost ~]# 
+[root@localhost ~]# touch /file2
+[root@localhost ~]# 
+[root@localhost ~]# getfacl file2
+getfacl: file2: No such file or directory
+[root@localhost ~]# getfacl /file2
+getfacl: Removing leading '/' from absolute path names
+# file: file2
+# owner: root
+# group: root
+user::rw-
+group::r--
+other::r--
+
+[root@localhost ~]# 
+[root@localhost ~]# ls -l /file2
+-rw-r--r--. 1 root root 0 Dec 10 09:37 /file2
+[root@localhost ~]# setfacl -m u:jhon:-w- file2
+setfacl: file2: No such file or directory
+[root@localhost ~]# setfacl -m u:jhon:-w- /file2
+[root@localhost ~]# 
+[root@localhost ~]# getfacl file2
+getfacl: file2: No such file or directory
+[root@localhost ~]# 
+[root@localhost ~]# getfacl /file2
+getfacl: Removing leading '/' from absolute path names
+# file: file2
+# owner: root
+# group: root
+user::rw-
+user:jhon:-w-
+group::r--
+mask::rw-
+other::r--
+
+[root@localhost ~]# 
+[root@localhost ~]# ls -l /file2
+-rw-rw-r--+ 1 root root 0 Dec 10 09:37 /file2
+[root@localhost ~]# ls -l root
+ls: cannot access root: No such file or directory
+[root@localhost ~]# ls -l /root
+total 8
+-rw-------. 1 root root 2049 Dec  3 17:28 anaconda-ks.cfg
+drwxr-xr-x. 2 root root    6 Dec  4 16:30 dir1
+-rwxrwxrwx+ 1 root root    0 Dec  6 10:50 file1
+-rw-r--r--. 1 root root    0 Dec 10 09:23 file5
+-rw-r--r--. 1 root root 2125 Dec  3 17:32 initial-setup-ks.cfg
+[root@localhost ~]# ls -ld /root
+dr-xr-x---. 6 root root 263 Dec 10 09:23 /root
+[root@localhost ~]# cd /
+[root@localhost /]# ll
+total 20
+lrwxrwxrwx.   1 root root    7 Dec  3 16:56 bin -> usr/bin
+dr-xr-xr-x.   4 root root 4096 Dec  7 08:53 boot
+drwxr-xr-x.  19 root root 3260 Dec 10 09:15 dev
+drwxr-xr-x. 145 root root 8192 Dec  7 17:27 etc
+-rw-r--r--.   1 root root    0 Dec 10 09:22 file1
+-rw-rw-r--+   1 root root    0 Dec 10 09:37 file2
+-rw-r--r--.   1 root root    0 Dec 10 09:24 file5
+drwxr-xr-x.   7 root root   67 Dec  7 10:37 home
+lrwxrwxrwx.   1 root root    7 Dec  3 16:56 lib -> usr/lib
+lrwxrwxrwx.   1 root root    9 Dec  3 16:56 lib64 -> usr/lib64
+drwxr-xr-x.   2 root root    6 Dec 14  2017 media
+drwxr-xr-x.   2 root root    6 Dec 14  2017 mnt
+drwxr-xr-x.   3 root root   16 Dec  3 17:19 opt
+dr-xr-xr-x. 283 root root    0 Dec 10 09:15 proc
+dr-xr-x---.   6 root root  263 Dec 10 09:23 root
+drwxr-xr-x.  42 root root 1320 Dec 10 09:18 run
+lrwxrwxrwx.   1 root root    8 Dec  3 16:56 sbin -> usr/sbin
+drwxr-xr-x.   2 root root    6 Dec 14  2017 srv
+dr-xr-xr-x.  13 root root    0 Dec 10 09:15 sys
+drwxrwxrwt.  39 root root 4096 Dec 10 09:36 tmp
+drwxr-xr-x.  13 root root  155 Dec  3 16:56 usr
+drwxr-xr-x.  20 root root  282 Dec  3 17:30 var
+'[root@localhost /]# getfacl file2
+# file: file2
+# owner: root
+# group: root
+user::rw-
+user:jhon:-w-
+group::r--
+mask::rw-
+other::r--
+
+[root@localhost /]# exit
+logout
+[jhon@localhost ~]$ cd /
+[jhon@localhost /]$ vim file2
+[jhon@localhost /]$ cat file2
+cat: file2: Permission denied
+[jhon@localhost /]$ su - root
+Password: 
+Last login: Mon Dec 10 09:22:36 IST 2018 on pts/0
+[root@localhost ~]# cat /file2
+jhjkjkhjkhkjhkjhjkhjkhjkhj
+[root@localhost ~]# 
+[root@localhost ~]# cd /
+[root@localhost /]# ll
+total 24
+lrwxrwxrwx.   1 root root    7 Dec  3 16:56 bin -> usr/bin
+dr-xr-xr-x.   4 root root 4096 Dec  7 08:53 boot
+drwxr-xr-x.  19 root root 3260 Dec 10 09:15 dev
+drwxr-xr-x. 145 root root 8192 Dec  7 17:27 etc
+-rw-r--r--.   1 root root    0 Dec 10 09:22 file1
+-rw-rw-r--+   1 root root   27 Dec 10 09:51 file2
+-rw-r--r--.   1 root root    0 Dec 10 09:24 file5
+drwxr-xr-x.   7 root root   67 Dec  7 10:37 home
+lrwxrwxrwx.   1 root root    7 Dec  3 16:56 lib -> usr/lib
+lrwxrwxrwx.   1 root root    9 Dec  3 16:56 lib64 -> usr/lib64
+drwxr-xr-x.   2 root root    6 Dec 14  2017 media
+drwxr-xr-x.   2 root root    6 Dec 14  2017 mnt
+drwxr-xr-x.   3 root root   16 Dec  3 17:19 opt
+dr-xr-xr-x. 283 root root    0 Dec 10 09:15 proc
+dr-xr-x---.   6 root root  263 Dec 10 09:51 root
+drwxr-xr-x.  42 root root 1320 Dec 10 09:18 run
+lrwxrwxrwx.   1 root root    8 Dec  3 16:56 sbin -> usr/sbin
+drwxr-xr-x.   2 root root    6 Dec 14  2017 srv
+dr-xr-xr-x.  13 root root    0 Dec 10 09:15 sys
+drwxrwxrwt.  39 root root 4096 Dec 10 09:52 tmp
+drwxr-xr-x.  13 root root  155 Dec  3 16:56 usr
+drwxr-xr-x.  20 root root  282 Dec  3 17:30 var
+[root@localhost /]# 
+[root@localhost /]# touch file6
+[root@localhost /]# ll
+total 24
+lrwxrwxrwx.   1 root root    7 Dec  3 16:56 bin -> usr/bin
+dr-xr-xr-x.   4 root root 4096 Dec  7 08:53 boot
+drwxr-xr-x.  19 root root 3260 Dec 10 09:15 dev
+drwxr-xr-x. 145 root root 8192 Dec  7 17:27 etc
+-rw-r--r--.   1 root root    0 Dec 10 09:22 file1
+-rw-rw-r--+   1 root root   27 Dec 10 09:51 file2
+-rw-r--r--.   1 root root    0 Dec 10 09:24 file5
+-rw-r--r--.   1 root root    0 Dec 10 09:56 file6
+drwxr-xr-x.   7 root root   67 Dec  7 10:37 home
+lrwxrwxrwx.   1 root root    7 Dec  3 16:56 lib -> usr/lib
+lrwxrwxrwx.   1 root root    9 Dec  3 16:56 lib64 -> usr/lib64
+drwxr-xr-x.   2 root root    6 Dec 14  2017 media
+drwxr-xr-x.   2 root root    6 Dec 14  2017 mnt
+drwxr-xr-x.   3 root root   16 Dec  3 17:19 opt
+dr-xr-xr-x. 282 root root    0 Dec 10 09:15 proc
+dr-xr-x---.   6 root root  263 Dec 10 09:51 root
+drwxr-xr-x.  42 root root 1320 Dec 10 09:18 run
+lrwxrwxrwx.   1 root root    8 Dec  3 16:56 sbin -> usr/sbin
+drwxr-xr-x.   2 root root    6 Dec 14  2017 srv
+dr-xr-xr-x.  13 root root    0 Dec 10 09:15 sys
+drwxrwxrwt.  39 root root 4096 Dec 10 09:52 tmp
+drwxr-xr-x.  13 root root  155 Dec  3 16:56 usr
+drwxr-xr-x.  20 root root  282 Dec  3 17:30 var
+[root@localhost /]# 
+[root@localhost /]# su - jhon
+Last login: Mon Dec 10 09:16:38 IST 2018 on :0
+[jhon@localhost ~]$ 
+[jhon@localhost ~]$ touch file7
+[jhon@localhost ~]$ cd /
+[jhon@localhost /]$ ll
+total 24
+lrwxrwxrwx.   1 root root    7 Dec  3 16:56 bin -> usr/bin
+dr-xr-xr-x.   4 root root 4096 Dec  7 08:53 boot
+drwxr-xr-x.  19 root root 3260 Dec 10 09:15 dev
+drwxr-xr-x. 145 root root 8192 Dec  7 17:27 etc
+-rw-r--r--.   1 root root    0 Dec 10 09:22 file1
+-rw-rw-r--+   1 root root   27 Dec 10 09:51 file2
+-rw-r--r--.   1 root root    0 Dec 10 09:24 file5
+-rw-r--r--.   1 root root    0 Dec 10 09:56 file6
+drwxr-xr-x.   7 root root   67 Dec  7 10:37 home
+lrwxrwxrwx.   1 root root    7 Dec  3 16:56 lib -> usr/lib
+lrwxrwxrwx.   1 root root    9 Dec  3 16:56 lib64 -> usr/lib64
+drwxr-xr-x.   2 root root    6 Dec 14  2017 media
+drwxr-xr-x.   2 root root    6 Dec 14  2017 mnt
+drwxr-xr-x.   3 root root   16 Dec  3 17:19 opt
+dr-xr-xr-x. 286 root root    0 Dec 10 09:15 proc
+dr-xr-x---.   6 root root  263 Dec 10 09:51 root
+drwxr-xr-x.  42 root root 1320 Dec 10 09:18 run
+lrwxrwxrwx.   1 root root    8 Dec  3 16:56 sbin -> usr/sbin
+drwxr-xr-x.   2 root root    6 Dec 14  2017 srv
+dr-xr-xr-x.  13 root root    0 Dec 10 09:15 sys
+drwxrwxrwt.  39 root root 4096 Dec 10 09:52 tmp
+drwxr-xr-x.  13 root root  155 Dec  3 16:56 usr
+drwxr-xr-x.  20 root root  282 Dec  3 17:30 var
+[jhon@localhost /]$ 
+[jhon@localhost /]$ getfacl file6
+# file: file6
+# owner: root
+# group: root
+user::rw-
+group::r--
+other::r--
+
+[jhon@localhost /]$ setfacl -m u:jhon:r-- file6
+setfacl: file6: Operation not permitted
+[jhon@localhost /]$ 
+[jhon@localhost /]$ su -
+Password: 
+Last login: Mon Dec 10 09:51:52 IST 2018 on pts/0
+[root@localhost ~]# 
+[root@localhost ~]# setfacl -m u:jhon:r-- file6
+setfacl: file6: No such file or directory
+[root@localhost ~]# setfacl -m u:jhon:r-- /file6
+[root@localhost ~]# 
+[root@localhost ~]# getfacl file6
+getfacl: file6: No such file or directory
+[root@localhost ~]# getfacl /file6
+getfacl: Removing leading '/' from absolute path names
+# file: file6
+# owner: root
+# group: root
+user::rw-
+user:jhon:r--
+group::r--
+mask::r--
+other::r--
+
+[root@localhost ~]# ll
+total 8
+-rw-------. 1 root root 2049 Dec  3 17:28 anaconda-ks.cfg
+drwxr-xr-x. 2 root root    6 Dec  4 16:30 dir1
+-rwxrwxrwx+ 1 root root    0 Dec  6 10:50 file1
+-rw-r--r--. 1 root root    0 Dec 10 09:23 file5
+-rw-r--r--. 1 root root 2125 Dec  3 17:32 initial-setup-ks.cfg
+[root@localhost ~]# cd /
+[root@localhost /]# ll
+total 24
+lrwxrwxrwx.   1 root root    7 Dec  3 16:56 bin -> usr/bin
+dr-xr-xr-x.   4 root root 4096 Dec  7 08:53 boot
+drwxr-xr-x.  19 root root 3260 Dec 10 09:15 dev
+drwxr-xr-x. 145 root root 8192 Dec  7 17:27 etc
+-rw-r--r--.   1 root root    0 Dec 10 09:22 file1
+-rw-rw-r--+   1 root root   27 Dec 10 09:51 file2
+-rw-r--r--.   1 root root    0 Dec 10 09:24 file5
+-rw-r--r--+   1 root root    0 Dec 10 09:56 file6
+drwxr-xr-x.   7 root root   67 Dec  7 10:37 home
+lrwxrwxrwx.   1 root root    7 Dec  3 16:56 lib -> usr/lib
+lrwxrwxrwx.   1 root root    9 Dec  3 16:56 lib64 -> usr/lib64
+drwxr-xr-x.   2 root root    6 Dec 14  2017 media
+drwxr-xr-x.   2 root root    6 Dec 14  2017 mnt
+drwxr-xr-x.   3 root root   16 Dec  3 17:19 opt
+dr-xr-xr-x. 288 root root    0 Dec 10 09:15 proc
+dr-xr-x---.   6 root root  263 Dec 10 09:51 root
+drwxr-xr-x.  42 root root 1320 Dec 10 09:18 run
+lrwxrwxrwx.   1 root root    8 Dec  3 16:56 sbin -> usr/sbin
+drwxr-xr-x.   2 root root    6 Dec 14  2017 srv
+dr-xr-xr-x.  13 root root    0 Dec 10 09:15 sys
+drwxrwxrwt.  39 root root 4096 Dec 10 10:01 tmp
+drwxr-xr-x.  13 root root  155 Dec  3 16:56 usr
+drwxr-xr-x.  20 root root  282 Dec  3 17:30 var
+[root@localhost /]# su - jhon
+Last login: Mon Dec 10 09:57:17 IST 2018 on pts/0
+[jhon@localhost ~]$ 
+[jhon@localhost ~]$ 
+[jhon@localhost ~]$ touch /file8
+touch: cannot touch ‘/file8’: Permission denied
+[jhon@localhost ~]$ 
+[jhon@localhost ~]$ 
+[jhon@localhost ~]$ su -
+Password: 
+Last login: Mon Dec 10 10:00:54 IST 2018 on pts/0
+[root@localhost ~]# 
+[root@localhost ~]# cd /
+[root@localhost /]# touch file8
+[root@localhost /]# getfacl file8
+# file: file8
+# owner: root
+# group: root
+user::rw-
+group::r--
+other::r--
+
+[root@localhost /]# setfacl -m u:jhon:rwx file8
+[root@localhost /]# 
+[root@localhost /]# getfacl file8
+# file: file8
+# owner: root
+# group: root
+user::rw-
+user:jhon:rwx
+group::r--
+mask::rwx
+other::r--
+
+[root@localhost /]# ll
+total 28
+lrwxrwxrwx.   1 root root    7 Dec  3 16:56 bin -> usr/bin
+dr-xr-xr-x.   4 root root 4096 Dec  7 08:53 boot
+drwxr-xr-x.  19 root root 3260 Dec 10 09:15 dev
+drwxr-xr-x. 145 root root 8192 Dec  7 17:27 etc
+-rw-r--r--.   1 root root    0 Dec 10 09:22 file1
+-rw-rw-r--+   1 root root   27 Dec 10 09:51 file2
+-rw-r--r--.   1 root root    0 Dec 10 09:24 file5
+-rw-r--r--+   1 root root    0 Dec 10 09:56 file6
+-rw-rwxr--+   1 root root   13 Dec 10 10:07 file8
+drwxr-xr-x.   7 root root   67 Dec  7 10:37 home
+lrwxrwxrwx.   1 root root    7 Dec  3 16:56 lib -> usr/lib
+lrwxrwxrwx.   1 root root    9 Dec  3 16:56 lib64 -> usr/lib64
+drwxr-xr-x.   2 root root    6 Dec 14  2017 media
+drwxr-xr-x.   2 root root    6 Dec 14  2017 mnt
+drwxr-xr-x.   3 root root   16 Dec  3 17:19 opt
+dr-xr-xr-x. 292 root root    0 Dec 10 09:15 proc
+dr-xr-x---.   6 root root  263 Dec 10 09:51 root
+drwxr-xr-x.  42 root root 1320 Dec 10 09:18 run
+lrwxrwxrwx.   1 root root    8 Dec  3 16:56 sbin -> usr/sbin
+drwxr-xr-x.   2 root root    6 Dec 14  2017 srv
+dr-xr-xr-x.  13 root root    0 Dec 10 09:15 sys
+drwxrwxrwt.  39 root root 4096 Dec 10 10:08 tmp
+drwxr-xr-x.  13 root root  155 Dec  3 16:56 usr
+drwxr-xr-x.  20 root root  282 Dec  3 17:30 var
+[root@localhost /]# 
+[root@localhost /]# setfacl -x u:jhon:file8
+setfacl: Option -x: Invalid argument near character 8
+[root@localhost /]# setfacl -x u:jhon: file8
+[root@localhost /]# 
+[root@localhost /]# getfacl file8
+# file: file8
+# owner: root
+# group: root
+user::rw-
+group::r--
+mask::r--
+other::r--
+
+[root@localhost /]# setfacl -b file8
+[root@localhost /]# 
+[root@localhost /]# ll
+total 28
+lrwxrwxrwx.   1 root root    7 Dec  3 16:56 bin -> usr/bin
+dr-xr-xr-x.   4 root root 4096 Dec  7 08:53 boot
+drwxr-xr-x.  19 root root 3260 Dec 10 09:15 dev
+drwxr-xr-x. 145 root root 8192 Dec  7 17:27 etc
+-rw-r--r--.   1 root root    0 Dec 10 09:22 file1
+-rw-rw-r--+   1 root root   27 Dec 10 09:51 file2
+-rw-r--r--.   1 root root    0 Dec 10 09:24 file5
+-rw-r--r--+   1 root root    0 Dec 10 09:56 file6
+-rw-r--r--.   1 root root   13 Dec 10 10:07 file8
+drwxr-xr-x.   7 root root   67 Dec  7 10:37 home
+lrwxrwxrwx.   1 root root    7 Dec  3 16:56 lib -> usr/lib
+lrwxrwxrwx.   1 root root    9 Dec  3 16:56 lib64 -> usr/lib64
+drwxr-xr-x.   2 root root    6 Dec 14  2017 media
+drwxr-xr-x.   2 root root    6 Dec 14  2017 mnt
+drwxr-xr-x.   3 root root   16 Dec  3 17:19 opt
+dr-xr-xr-x. 293 root root    0 Dec 10 09:15 proc
+dr-xr-x---.   6 root root  263 Dec 10 09:51 root
+drwxr-xr-x.  42 root root 1320 Dec 10 09:18 run
+lrwxrwxrwx.   1 root root    8 Dec  3 16:56 sbin -> usr/sbin
+drwxr-xr-x.   2 root root    6 Dec 14  2017 srv
+dr-xr-xr-x.  13 root root    0 Dec 10 09:15 sys
+drwxrwxrwt.  39 root root 4096 Dec 10 10:08 tmp
+drwxr-xr-x.  13 root root  155 Dec  3 16:56 usr
+drwxr-xr-x.  20 root root  282 Dec  3 17:30 var
+[root@localhost /]# 
+
+
+
+		      

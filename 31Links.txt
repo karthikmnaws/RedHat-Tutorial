@@ -1,0 +1,27 @@
+
+										Links
+									    ===========
+
+- Links are mainly used to provide either data accessability or data Redundency.
+- There are 2 major types of links
+	* Soft Links
+	* Hard Links
+
+- Software Links
+  --------------
+	Soft Links can be created on both Files and Directories where in the Link file doesn't contain the actual data. 
+	It contains only the path to the source file.
+	Syntax:
+		ln -s <filename> <new link name>
+	Note:1) inode number is same for created link as well
+	     2) Link file should always be a new file name
+	     3) If the source file is deleted the data cannot be access from the link
+
+- Hardware Links
+  --------------
+	It can be created only for file, not for the directories
+	Any data updated to source file will be updated to the destination and vice versa
+	In case of Hard Link, if the source file is deleted the data can be access using link file.
+	Here inode number is different
+	Syntax:
+		ln <filename> <new linkname>

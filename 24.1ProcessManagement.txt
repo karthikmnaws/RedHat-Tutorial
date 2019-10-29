@@ -1,0 +1,54 @@
+[root@server ~]# ps -l
+F S   UID    PID   PPID  C PRI  NI ADDR SZ WCHAN  TTY          TIME CMD
+4 S     0  11886  11879  0  80   0 - 29186 do_wai pts/0    00:00:00 bash
+0 R     0  11935  11886  0  80   0 - 38309 -      pts/0    00:00:00 ps
+[root@server ~]# 
+[root@server ~]# 
+[root@server ~]# sleep 6000
+^C
+[root@server ~]# jobs
+[root@server ~]# sleep 6000
+^Z
+[1]+  Stopped                 sleep 6000
+[root@server ~]# 
+[root@server ~]# jobs
+[1]+  Stopped                 sleep 6000
+[root@server ~]# ps -l
+F S   UID    PID   PPID  C PRI  NI ADDR SZ WCHAN  TTY          TIME CMD
+4 S     0  11886  11879  0  80   0 - 29186 do_wai pts/0    00:00:00 bash
+0 T     0  11990  11886  0  80   0 - 26988 do_sig pts/0    00:00:00 sleep
+0 R     0  12017  11886  0  80   0 - 38309 -      pts/0    00:00:00 ps
+[root@server ~]# 
+[root@server ~]# sleep 4000 &
+[2] 12030
+[root@server ~]# jobs
+[1]+  Stopped                 sleep 6000
+[2]-  Running                 sleep 4000 &
+[root@server ~]# 
+[root@server ~]# 
+[root@server ~]# bg %1
+[1]+ sleep 6000 &
+[root@server ~]# jobs
+[1]-  Running                 sleep 6000 &
+[2]+  Running                 sleep 4000 &
+[root@server ~]# 
+[root@server ~]# fg %2
+sleep 4000
+^Z
+[2]+  Stopped                 sleep 4000
+[root@server ~]# 
+[root@server ~]# 
+[root@server ~]# 
+[root@server ~]# ps
+   PID TTY          TIME CMD
+ 11886 pts/0    00:00:00 bash
+ 11990 pts/0    00:00:00 sleep
+ 12030 pts/0    00:00:00 sleep
+ 12157 pts/0    00:00:00 ps
+[root@server ~]# 
+[root@server ~]# ps -aux
+USER        PID %CPU %MEM    VSZ   RSS TTY      STAT START   TIME COMMAND
+root          1  1.0  0.1 129644  6912 ?        Ss   00:36   0:04 /usr/lib/systemd/systemd --sw
+root          2  0.0  0.0      0     0 ?        S    00:36   0:00 [kthreadd]
+root          3  0.0  0.0      0     0 ?        S    00:36   0:00 [ksoftirqd/0]
+root          5  0.0  0.0      0     0 ?        S<   00:36   0:00 [kworker/0:0H]

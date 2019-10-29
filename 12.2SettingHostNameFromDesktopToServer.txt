@@ -1,0 +1,80 @@
+
+				Setting Host Name From Desktop To Server
+				=========================================
+
+$ hostname -I
+$ ping 192.168.133.181
+$ ssh root@192.168.133.181			//  Logging into server from desktop
+$ ping 192.168.133.179				// Pinging desktop from server
+$ hostnamectl set-hostname server0.example.com	// setting server hostname from desktop
+$ vim /etc/resolv.conf				// To check which is my server domain
+$ vim /etc/hosts				// Type this at the end ( 92.168.133.181 server0.example.com )
+$ ping server0.example.com			// To verify ping, to server0.example.com
+$ reboot 
+$ hostname
+
+--------------------------------------------------------------------------------------------------------------------------------
+[karthik@localhost ~]$ su -
+Password: 
+Last login: Tue Jan  8 22:56:18 IST 2019 on pts/0
+[root@localhost ~]# 
+[root@localhost ~]# hostname -I
+192.168.133.179 192.168.122.1 
+
+[root@localhost ~]# ping 192.168.133.181			// Pinging server
+PING 192.168.133.181 (192.168.133.181) 56(84) bytes of data.
+64 bytes from 192.168.133.181: icmp_seq=1 ttl=64 time=674 ms
+64 bytes from 192.168.133.181: icmp_seq=2 ttl=64 time=24.0 ms
+64 bytes from 192.168.133.181: icmp_seq=3 ttl=64 time=20.2 ms
+64 bytes from 192.168.133.181: icmp_seq=4 ttl=64 time=1.03 ms
+^C
+--- 192.168.133.181 ping statistics ---
+4 packets transmitted, 4 received, 0% packet loss, time 3007ms
+rtt min/avg/max/mdev = 1.031/179.991/674.603/285.697 ms
+[root@localhost ~]# 
+[root@localhost ~]# 
+[root@localhost ~]# ssh root@192.168.133.181			//  Logging into server from desktop
+root@192.168.133.181's password: 
+Last login: Tue Jan  8 23:05:12 2019
+[root@localhost ~]# 
+
+[root@localhost ~]# ping 192.168.133.179			// Pinging desktop from server
+PING 192.168.133.179 (192.168.133.179) 56(84) bytes of data.
+64 bytes from 192.168.133.179: icmp_seq=1 ttl=64 time=0.486 ms
+64 bytes from 192.168.133.179: icmp_seq=2 ttl=64 time=0.658 ms
+64 bytes from 192.168.133.179: icmp_seq=3 ttl=64 time=1.20 ms
+64 bytes from 192.168.133.179: icmp_seq=4 ttl=64 time=1.06 ms
+^C
+--- 192.168.133.179 ping statistics ---
+4 packets transmitted, 4 received, 0% packet loss, time 3003ms
+rtt min/avg/max/mdev = 0.486/0.854/1.206/0.293 ms
+	
+[root@localhost ~]# hostnamectl set-hostname server0.example.com	// setting server hostname from desktop
+
+
+[root@localhost ~]# vim /etc/resolv.conf				// To check which is my server domain
+[root@localhost ~]# vim /etc/hosts					// Type this at the end ( 92.168.133.181 server0.example.com )
+
+
+[root@localhost ~]# ping server0.example.com				// To verify ping, to server0.example.com
+PING server0.example.com (192.168.133.181) 56(84) bytes of data.
+64 bytes from server0.example.com (192.168.133.181): icmp_seq=1 ttl=64 time=0.057 ms
+64 bytes from server0.example.com (192.168.133.181): icmp_seq=2 ttl=64 time=0.110 ms
+64 bytes from server0.example.com (192.168.133.181): icmp_seq=3 ttl=64 time=0.128 ms
+64 bytes from server0.example.com (192.168.133.181): icmp_seq=4 ttl=64 time=0.157 ms
+64 bytes from server0.example.com (192.168.133.181): icmp_seq=5 ttl=64 time=0.085 ms
+64 bytes from server0.example.com (192.168.133.181): icmp_seq=6 ttl=64 time=0.112 ms
+^C
+--- server0.example.com ping statistics ---
+6 packets transmitted, 6 received, 0% packet loss, time 5003ms
+rtt min/avg/max/mdev = 0.057/0.108/0.157/0.032 ms
+
+[root@localhost ~]# reboot 
+Connection to 192.168.133.181 closed by remote host.
+Connection to 192.168.133.181 closed.
+[root@localhost ~]# Connection to 192.168.133.181 closed by remote host.
+Connection to 192.168.133.181 closed.
+
+[root@localhost ~]# hostname
+localhost.localdomain
+[root@localhost ~]# 

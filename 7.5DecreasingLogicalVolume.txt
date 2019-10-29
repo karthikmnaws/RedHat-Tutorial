@@ -1,0 +1,74 @@
+
+Note:: It is not possible to decrease the volume in XFS File System, because XFS file system makes the file System as Block device.
+
+$ df -hT
+$ umount /dev/BTM/LIT1
+$ e2fsck -f /dev/BTM/LIT1
+
+To check file system consistency of the device even after un-mounting.
+
+$ resize2fs /dev/BTM/LIT1 600M
+$ lvreduce -L 600M /dev/BTM/LIT1
+$ mount -a
+$ df -hT
+
+
+
+[karthik@localhost ~]$ su -
+Password: 
+Last login: Fri Dec 28 11:15:47 IST 2018 on pts/0
+[root@localhost ~]# cd /
+[root@localhost /]# df -hT
+Filesystem           Type      Size  Used Avail Use% Mounted on
+/dev/sda2            xfs        15G  3.8G   11G  26% /
+devtmpfs             devtmpfs  1.9G     0  1.9G   0% /dev
+tmpfs                tmpfs     1.9G     0  1.9G   0% /dev/shm
+tmpfs                tmpfs     1.9G   13M  1.9G   1% /run
+tmpfs                tmpfs     1.9G     0  1.9G   0% /sys/fs/cgroup
+/dev/sda1            xfs        97M   75M   22M  78% /boot
+/dev/mapper/BTM-LIT2 xfs       2.5G   33M  2.5G   2% /dirl
+/dev/mapper/BTM-LIT1 ext4      1.5G  3.0M  1.4G   1% /dirL
+tmpfs                tmpfs     378M  4.0K  378M   1% /run/user/42
+tmpfs                tmpfs     378M   24K  378M   1% /run/user/1000
+/dev/sr0             iso9660   4.2G  4.2G     0 100% /run/media/karthik/RHEL-7.6 Server.x86_64
+tmpfs                tmpfs     378M     0  378M   0% /run/user/0
+[root@localhost /]# 
+[root@localhost /]# umount /dev/BTM/LIT1
+[root@localhost /]# e2fsck -f /dev/BTM/LIT1
+e2fsck 1.42.9 (28-Dec-2013)
+Pass 1: Checking inodes, blocks, and sizes
+Pass 2: Checking directory structure
+Pass 3: Checking directory connectivity
+Pass 4: Checking reference counts
+Pass 5: Checking group summary information
+/dev/BTM/LIT1: 11/98304 files (0.0% non-contiguous), 15140/390144 blocks
+[root@localhost /]# 
+[root@localhost /]# resize2fs /dev/BTM/LIT1 600M
+resize2fs 1.42.9 (28-Dec-2013)
+Resizing the filesystem on /dev/BTM/LIT1 to 153600 (4k) blocks.
+The filesystem on /dev/BTM/LIT1 is now 153600 blocks long.
+
+[root@localhost /]# lvreduce -L 600M /dev/BTM/LIT1
+  WARNING: Reducing active logical volume to 600.00 MiB.
+  THIS MAY DESTROY YOUR DATA (filesystem etc.)
+Do you really want to reduce BTM/LIT1? [y/n]: y
+  Size of logical volume BTM/LIT1 changed from <1.49 GiB (381 extents) to 600.00 MiB (150 extents).
+  Logical volume BTM/LIT1 successfully resized.
+[root@localhost /]# 
+[root@localhost /]# mount -a
+[root@localhost /]# df -hT
+Filesystem           Type      Size  Used Avail Use% Mounted on
+/dev/sda2            xfs        15G  3.8G   11G  26% /
+devtmpfs             devtmpfs  1.9G     0  1.9G   0% /dev
+tmpfs                tmpfs     1.9G     0  1.9G   0% /dev/shm
+tmpfs                tmpfs     1.9G   13M  1.9G   1% /run
+tmpfs                tmpfs     1.9G     0  1.9G   0% /sys/fs/cgroup
+/dev/sda1            xfs        97M   75M   22M  78% /boot
+/dev/mapper/BTM-LIT2 xfs       2.5G   33M  2.5G   2% /dirl
+tmpfs                tmpfs     378M  4.0K  378M   1% /run/user/42
+tmpfs                tmpfs     378M   24K  378M   1% /run/user/1000
+/dev/sr0             iso9660   4.2G  4.2G     0 100% /run/media/karthik/RHEL-7.6 Server.x86_64
+tmpfs                tmpfs     378M     0  378M   0% /run/user/0
+/dev/mapper/BTM-LIT1 ext4      558M  1.6M  517M   1% /dirL
+[root@localhost /]# 
+[root@localhost /]# 

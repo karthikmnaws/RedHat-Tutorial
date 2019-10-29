@@ -1,0 +1,138 @@
+
+
+
+		              Basic Commands of Linux
+		             -------------------------
+
+- Commands
+  ---------
+	It is an instructions or set of instructions provided to the machine to be executed and should give a valid output.
+
+- Part of a Command
+  -----------------
+	cmd		option		argument
+       WHAT ?            How ?          WHERE ?
+
+What to give command ?
+How to give command ?
+Where to give command ?
+
+
+  example : ls    -a    /etc     // To list all files and directries(including hidden files) under "/etc"  dir.
+
+- $ man <cmd>
+  ----------
+	To give one line discription + all options and their description.
+------------------------------------------------------------------------------------------------------------------------------
+
+			Listing Commands
+			----------------
+
+- $ ls
+	To list files and dirs(normal) under present working dir (pwd ).
+
+- $ ls -a
+	To list all files and dir including hidden under pwd.
+
+- $ ls -t
+	To list files and dirs based on time ( New to old ).
+
+- $ ls -tr
+	To list files and dirs based on time (old to new ).
+
+- $ ls -i
+	To list files and dirs based on Inode number.
+
+- $ ls -F
+	To list files and dirs and differentiate between them.
+
+- $ ls -l
+	To list file and dirs with complets information 
+--------------------------------------------------------------------------------------------------------------------------------
+
+Change Directories (cd)
+----------------------
+	To change the shell access from present dir to working dir.
+
+cd ..
+--------
+	To go to parent directory.
+
+cd _
+-------
+	From present dir to previous dir, like Alt + Tab in Windows.
+
+cd (or) cd ~
+------------
+	To go to home directory or current logged in User.
+---------------------------------------------------------------------------------------------------------------------------------
+	
+				File and Directory Management
+				-----------------------------
+
+Creating Files    1) touch
+		  2) cat
+		  3) Vim
+- touch
+  -----
+	$ touch <new file>           // to create new file
+	$ touch <existing file>      // to create the Timestamp of a file to current time.
+
+- cat
+  ----
+	$ cat <file name>   	       // To read and display the file content on terminal
+	$ cat > <existing File Name>   // To overwrite the contents of file
+	$ cat >> <existing File Name>  // To append data to a file
+  
+[karthik@localhost ~]$ touch abc
+[karthik@localhost ~]$ cat abc
+kvfoevkmfkvmfpvp
+[karthik@localhost ~]$ cat def
+cat: def: No such file or directory
+[karthik@localhost ~]$ cat > abc
+I am villian
+[karthik@localhost ~]$ cat abc
+I am villian     		// press ctrl + d to save and exit
+[karthik@localhost ~]$ 
+[karthik@localhost ~]$ cat >> abc
+I am hero
+[karthik@localhost ~]$ cat abc
+I am villianI am hero
+
+
+- Vim
+  ------
+	$ vim <new file name>		// to create a new file and add data
+	$ vim <existing file>		// to edit/modify data 
+
+	esc + i    => insert mode
+	esc + :q!  => to exit without saving
+	esc + :wq! => to save and exit
+
+	Creating Directories
+   -------------------------------
+
+- $ mkdir < new file name >       	// To create diredtory
+- $ mkdir <dir1> <dir2> <dir3>		// To create 3 different directories
+--------------------------------------------------------------------------------------------------------------------------------------
+
+		Copying and Renaming
+		--------------------
+
+- $ cp <source file> <destination file>    	// To copy from source to destination 
+
+Note::
+	If destination file exists, then it will overwrite, if destination file doesn't exists, it creats new file and then add data.
+
+- $ cp -p <s/d> <d/d> 		// to copy a directory
+- $ mv <source> <destination>   // to move file or dir from source to destination
+- $ mv <old name> <new name>    
+
+		Deleting the file and Directories
+		---------------------------------
+
+- $ rm -f <f/n>		// to delete a file forcefully
+- $ rm -rf <d/N> 	// to delete a dir forcefully
+	
+
+	

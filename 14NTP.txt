@@ -1,0 +1,26 @@
+
+		
+						Network Time Protocol [NTP]
+						===========================
+
+- Correct synchronized time is very important for Log file analysis accross multiple systems. NTP is a standard way for machines
+  to provide and obtain correct Time information in Internet.[ Say time difference between India and America is 5:30 ]
+
+- Time Date CTL shows an overview of current time related system settings including correct time, time zone and NTP sync. setting of the system.
+
+- Time Date CTL list-Time zones, is a database with known time zones.
+
+
+
+- $ vim /etc/chrony.conf
+	Server classroom.example.com iburst
+
+- $ systemctl restart chronyd.sevice
+
+- $ chronyc source -V
+
+
+	chronyc command with -V is used to verify NTP server with local machine
+	The qulaity of NTP time source is determined by the stratum reported by the time source
+	ibrust is used to send 3 requests and take a average time and assign it.
+

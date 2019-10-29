@@ -1,0 +1,50 @@
+
+						Package Management
+						==================
+
+- Package is nothing but approval of Services
+- Default Package Manager in Red Hat is RPM [Redhat Package Manager]
+- With RPM, software is managed in discrete package
+- An RPM package includes the Software with instructions for adding, removing, or upgrading those packages when properly
+  use RPM system can backup key configuration files.
+- An RPM package usually includes name, version, build, and Architecture of the Package.
+
+- $ rpm -qa	// it shows list of packages in our system
+
+	ex::  m17n-lib-1.6.4-14.el7.x86_64
+
+		m17n-lib	1.6.4		14.el7		.x86_64
+	   -----name----   ---version---    ---build---    ---architecture---
+
+- Note::
+  ------
+	x86_64 => 64 bit application
+	I386   => 32 bit application
+	I686   => 64 bit can also run on 32 bit
+	
+	x86
+	386  |
+	486  |---> [P.I]
+	586  |
+
+	P.II
+	P.III
+	P.IV
+	i2
+	i3
+	i5
+	i7
+
+		14.el7 => 14th built for Enterprise Linux
+
+
+	main package   	|--------> VLC Player
+		        |
+			|
+			|   |--> Media Playre
+	Dependency	|   |--> Encoder
+	package		|-->|--> Decoder
+			    |--> Software
+			    |--> Hardware
+
+- To install main package[VLC Player], we have to install Dependency Package First.

@@ -1,0 +1,94 @@
+
+
+
+							Internet Small Computer System Interface [ISCSI]
+							 (For creating Partition in Server from Clinet)
+						=============================================================
+
+- It is mainly used to share the Disk space accross the Network at Block Level. It is SAN architecture [Storage Area Network]
+
+Note::
+	ISCSI uses TCP/IP based protocol Servers which mainly uses the  network connections to share data.
+
+		
+              		------------------------------------------------|
+			|						|
+			|		  Target			|
+			|		-----------			|
+			|		|	  |			|	TPG
+			|		|     ----|			|   [Target Protocol Group]	
+			|		|     |	  |--------- LUN	|	
+			|		----------|-----|		|
+			|		     |		|		|
+			|		    		|		|
+			|				|		|
+			|				|		|
+			|				|		|
+			|		-----------	|		|
+			|		|	  |<-----		|
+			|		|     	  |			|
+			|		|	  |			|
+			|		-----------			|
+			|		     |				|
+			|		Initiator			|
+			|-----------------------------------------------|
+
+	iqn.YYYY-MM.<reverse domain> : <Host name>
+	
+	For server0.example.com => iqn.2019-02.com.example:server0
+	For desktop0.example.com => iqn.2019-02.com.example:desktop0
+
+1) Target = It is a server machine shares a disk space.
+2) Initiator = It is the client machine which access the disk space.
+3) LUN = Partition that is being shared.
+4) ACL = It is mainly used to define the initiator that has to access the LUN
+5) Portal = It is the IP Address of the target using which the initiator can access the LUN
+6) iqn [iscsi qualified name] = It is a unique name allocated to all the hosts in the environment.
+7) TPG = It is the combination of 1 target connected to 1 or more initiators, which is accessing 1 or more LUN's.
+
+				
+
+						 Target Configurations from Server Side	[server0.example.com]
+					        =============================================================		
+
+- $ cd
+- $ yum install targetcli.noarch -y
+- $ fdisk /dev/vdb
+- n
+- +3G
+- w
+- $ targetcli			// Takes me inside target configuration
+- /> /backstores/block
+- > create disk1 /dev/sda2p1/dev/vdb1
+- > /iscsi
+- > create iqn.2019-02.com.example:server0
+- > ipn.2019-02.com.example:server0/tpg1/luns
+- > create /backstores/block/disk1
+- > cd ..
+- > portals/
+- > create 172.25.0.11  		// IP address of target machine
+- > cd
+- > press enter to come out
+- > exit
+- $ firewall-cmd --permanent --add-ports=3260/tcp
+- $ firewall-cmd --reload
+- $ systemctl enable target.service
+- $ systemctl start target.service
+
+							
+							Initiator Confg from Desktop Side [desktop0.example.com]
+							========================================================
+
+- $ cd
+- $ fdisk -l
+- $ yum install iscsi-initiator-utils.i686 -y
+- $ vim /etc/iscsi/initiatorname.iscsi
+	InitiatorName = iqn.2019-02.com.example:desktop0
+- $ iscsiadm -m discovery -t st -p 172.168.0.11:3260
+- $ iscsiadm -m node -T iqn.2019-02.com.example:server0 -p 172.25.0.11:3260 -l
+- $ fdisk -l
+
+
+
+- $ vim /etc/fstab
+	/dev/sda1	/dir1	ext4	_netdev		0 0

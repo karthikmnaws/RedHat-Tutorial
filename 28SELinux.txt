@@ -1,0 +1,79 @@
+
+								Security Enhanced Linux (SELinux)
+							=================================================
+							        (Top Priority in Enhancing Security)
+
+- Context in SE Linux
+	* User
+	* Role
+	* Type
+	* Sensitivity
+
+- Consider a file1, assigning role context
+		Manager = r - -
+		T.L	= r w -
+		Agents  = r - -
+
+- Modes of OS
+  ----------
+	Enforcing Mode
+	Permissive Mode
+	Disabled Mode
+
+  While booting, Stop in Enforcing mode, assigning above rules [ Manager,TL,Agents ] to Roles.
+
+ Setting Context in doing in O.S
+	 Modes    in my machine
+
+- SE Linux
+	It is a additional layer of system security, primary goal of SE Linux is to protect user data from system services that have been compramised.
+  SE Linux is the set of security rules that determines which process can access which files directives and ports. Every process files, directories,
+ and ports has a special label called SELinux context.
+
+- Types of Context are
+ 1. User
+ 2. Roles
+ 3. Type
+ 4. Sencitivity
+	And the default context is 'Type' context.
+
+Modes in SE Linux are
+=====================
+1. Enforcing
+  ==========
+	SE Linux actively denies access to web Servers attempting to read files with temp_t type context.
+	In this mode SELinix both logs and protects '1'.
+
+2. Permissive
+  ===========
+	It is often used in trouble shooting purpose, In this mode SE Liux allows the instructions even if their as any explecit rules and it Logs those
+	instructions. Numerical value is '0'.
+
+3. Dissabled
+   ==========
+	Here SE Linux is completely disabled.
+
+- Hirerarchy of Permission
+  ======================
+	1. SE Linux
+	2. Firewall
+	3. SCL
+	4. chmod
+
+- $ touch file1
+- $ ls -z file1		// To display SE Linux Context
+- $ getenforce		// To check SE Linux mode
+- $ setenforce 0	// To change
+- $ setenforce 1	// To set to Enforce Mode
+
+- To Change to Dissable mode
+$ vim /etc/sysconfig/selinux
+	SELINUX = disabled		// We can type to change any mode like Enforce, Permissive, Dissabled
+
+- $ reboot		// only for Default mode
+- $ getenforce
+	Dissabled
+
+
+		
+	

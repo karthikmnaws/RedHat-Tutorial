@@ -1,0 +1,19 @@
+
+
+
+
+
+
+
+https://www.youtube.com/watch?v=sg_qvtp9WMc  ( For installing yum in GUI mode)
+https://www.youtube.com/watch?v=s_Mv2X2uSL8 ( to install and switch from CLI to GUI in Redhat Linux 7 ) 
+https://www.youtube.com/watch?v=bGSzwUpXKMw ( For installing yum in cli mode )
+
+- https://developers.redhat.com/products/rhel/download/  ( DVD ISO (4 GB) )
+	RedHat UserName     gookarthik
+	RedHat Password     Karthik12345
+
+- Installation Process guide ( https://www.youtube.com/watch?v=l28T22cMxhE&t=423s )
+	Root Password   2018
+	User		karthik
+	Password	2018

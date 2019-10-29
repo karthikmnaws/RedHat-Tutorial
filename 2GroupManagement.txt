@@ -1,0 +1,8 @@
+
+
+The syntax for the usermod command is:
+/usr/sbin/usermod [-G list of groups] user_name
+
+sudo usermod -a -G www-data ubuntu				-a  = all, including hidden
+sudo chgrp -R www-data  /opt/apache-8/datalake/              -R = Recursively
+sudo chmod -R g+w /opt/apache-8/datalake/			or chmod -R 020 /opt/apache-8/datalake/

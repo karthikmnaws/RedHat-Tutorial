@@ -1,0 +1,42 @@
+
+				Special Permission
+				======================
+
+- 3 types of Special Permissions are
+	1) Set Uid
+	2) Set Gid
+	3) Stickybit
+
+- Set Uid
+  ---------
+	Suid is always applied on executable files where in any user who executes will be executing as a owner of the file.
+	Syntax:   $ chmod u+s <file name>
+		  $ chmod 4 <file name>       //Numerical value
+
+- Set Gid
+  ---------
+	It is always allpied on directories, where in any Users who creates files and sub-directories will be the owners
+	but the group ownership is taken by the Parent directory.
+	Syntax:  $ chmod g+s <directory name>
+		 $ chmod 2  <directory name>     //Numerical value
+
+- Stickybit
+ --------------
+	It always applied on directory with full permissions where in any user can create sub directory but only the owner can delete dir.
+
+------------------------------------------------------------------------------------------------------------------------------------------
+
+[root@localhost ~]# ls -l /usr/bin/ | grep sudo*
+-rwxr-xr-x. 1 root root     247512 Sep 25 11:32 cvtsudoers
+---s--x--x. 1 root root     147392 Sep 25 11:32 sudo   				// s = it shows as a special permission
+lrwxrwxrwx. 1 root root          4 Dec  3 17:19 sudoedit -> sudo
+---x--x--x. 1 root root      57536 Sep 25 11:32 sudoreplay
+[root@localhost ~]# ls -l /usr/bin/ | grep passwd
+-rwsr-xr-x. 1 root root      78280 Apr 26  2018 gpasswd
+-rwxr-xr-x. 1 root root     273720 Sep 18 23:41 grub2-mkpasswd-pbkdf2
+-rwxr-xr-x. 1 root root      15416 Dec 15  2017 lppasswd
+-rwsr-xr-x. 1 root root      27832 Jan 30  2014 passwd
+-rwxr-xr-x. 1 root root      32016 Jan 28  2014 userpasswd
+-rwxr-xr-x. 1 root root      28376 Aug 31 17:34 vncpasswd
+
+

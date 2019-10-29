@@ -1,0 +1,33 @@
+
+
+
+					Internet Protocol Version 6 [IPV6]
+				 =================================================
+
+- It is intended as replacement for IPV4. It is a 128 bit number, normally expressed as 8 : seperated groups of 4 hexadecimal nibbles,
+  where each nibble represents 4 bits of IPV6 address.
+
+- Rules of IPV6	
+  ---------------
+
+* Leading 0's in a group should be supressed use :: to shorten as much as. Do not use :: to short one group of 0's instead use :0: and use ::
+  for long run of 0's. Always use lowercase letters for hexadecimal numbers.
+
+	2001 : 0db8 : 0000 : 0010 : 0000 : 0000: 0000 : 0001
+   =>	2001 : db8 : 0000 : 10 : 0000 : 0000 : 0000 : 1
+   => 	2001 : db8 : 0 : 10 : 0000 : 0000 : 0000 : 1
+   => 	2001 : db8 : 0 : 10 :: 1
+
+- To set IPV6 manually
+  ----------------------
+
+$ nmcli	connection show
+$ ifconfig
+$ nmcli connection modify 'System eth0' ipv6.address '2001:db8:0:10::1/64' ipv6.method manual
+$ nmcli connection up 'System eth0'
+$ ifconfig
+$ ping 2001:db8:0:10::1
+
+
+
+$ ping fe80::/64			// fe80::/64 = link local IP address, like 127.0.0.1 loop back address for IPV4

@@ -1,0 +1,43 @@
+
+					Setting Host Name
+					=================
+$ hostname
+$ hostname -I
+$ hostnamectl set-hostname desktop0.example.com
+$ vim /etc/hosts
+	192.168.133.179   desktop0.example.com	
+$ ping desktop0.example.com
+$ reboot
+$ hostname
+-----------------------------------------------------------------------------------------------
+
+[karthik@desktop0 ~]$ su -
+Password: 
+Last login: Wed Jan  9 09:36:41 IST 2019 on pts/0
+[root@desktop0 ~]# 
+[root@desktop0 ~]# 
+[root@desktop0 ~]# hostname
+desktop0.example.com
+[root@desktop0 ~]# 
+[root@desktop0 ~]# hostname -I
+192.168.133.179 192.168.122.1 
+[root@desktop0 ~]# 
+[root@desktop0 ~]# hostnamectl set-hostname desktop0.example.com
+
+[root@desktop0 ~]# 
+[root@desktop0 ~]# vim /etc/hosts
+[root@desktop0 ~]# 
+[root@desktop0 ~]# ping desktop0.example.com
+PING desktop0.example.com (192.168.133.179) 56(84) bytes of data.
+64 bytes from desktop0.example.com (192.168.133.179): icmp_seq=1 ttl=64 time=0.088 ms
+64 bytes from desktop0.example.com (192.168.133.179): icmp_seq=2 ttl=64 time=0.123 ms
+64 bytes from desktop0.example.com (192.168.133.179): icmp_seq=3 ttl=64 time=0.108 ms
+64 bytes from desktop0.example.com (192.168.133.179): icmp_seq=4 ttl=64 time=0.074 ms
+^C
+--- desktop0.example.com ping statistics ---
+4 packets transmitted, 4 received, 0% packet loss, time 2999ms
+rtt min/avg/max/mdev = 0.074/0.098/0.123/0.020 ms
+[root@desktop0 ~]# 
+[root@desktop0 ~]# hostname
+desktop0.example.com
+[root@desktop0 ~]# 

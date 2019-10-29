@@ -1,0 +1,25 @@
+
+
+
+							Internet Protocol Version 4 [IPV4]
+						    ==========================================
+
+
+- It is a 32-bit number normally expressed in 4 octates ranging from 0 - 255 and subnetted by dots.
+- The address is divided into network part and host part, All host in the same subet can talk to each other directly without router have same network part.	
+- Default Gateway
+ ----------------
+	A device that passes traffic from local subnet to devices on other subnets.
+
+- Subnet Mask
+  ------------
+	A subnet mask is a 32 bit number that masks an IP address and divides the IP address into network and Host Address.
+
+- Classes
+
+
+	Class A		001 - 126 ; 1.X.X.X	to	126.X.X.X			127.0.0.1 loop back address for IPV4
+	Class B		128 - 191 ; 128.0.X.X	to 	191.255.X.X
+	Class C		192 - 223 ; 192.0.0.X	to	223.255.255.X
+	Class D		224 - 239 ; 224.0.0.0	to	239.255.255.255
+	Class E		240 - 255 ; 240.0.0.0	to	255.255.255.255 	

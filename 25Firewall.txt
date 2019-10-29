@@ -1,0 +1,136 @@
+
+									Firewall
+								     =============
+
+- Firewall is a default method in RHEL7 for managing host level firewall. Firewalld seperates all incoming traffic into zones with each
+  zone having its own set of rules.
+
+$ firewall-cmd --get-default-zone		// To get a default zone
+$ firewall-cmd --list-all-zones			// Displays all the zones with configuration
+$ firewall-cmd --lists-all			// Displays configuration in default zone
+$ firewall-cmd --get-services			// To list all the services in firewall
+$ firewall-cmd --add-service=smtp		// To add a service from firewall
+$ firewall-cmd --remove-service=smtp		// To remove a service from firewall	
+$ firewall-cmd --add-port=22/tcp		// To add a port to the firewall
+$ firewall-cmd --remove-port=22/tcp		// To remove a port from firewall
+$ firewall-cmd --reload				// To drop the run time configuration and apply persistance(permanent) configuration.
+---------------------------------------------------------------------------------------------------------------------------------------
+
+
+							Rich Rules
+						    =================
+
+- Appart from regular zones and services in firewall we have 2 more options, DIrect rules and Rich Rules.
+
+- Direct Rules	
+  ------------
+	It allows administrator to insert and coppied ip, ipv6, eb tables rules to the zones managed by firewalld.
+	Direct rules offers less flexibilities compare to rich rules or Standard rules.
+
+- Rich Rules
+  -----------
+	Firewalld rich rules gives administrators an expressive language in which to custom firewall rules that are not covered in basic firewalld syntax.
+
+- 4 Options of firewalld Syntax are
+	1) fw-cmd --add-rich-rule = 'rule'		// To add a rich rule
+	2) fw-cmd --remove-rich-rule = 'rule'		// To remove a rich rule
+	3) fw-cmd --query-rich-rule = 'rule'		// To query a rich rule
+	4) fw-cmd --list-rich-rule			// List all the rich rules
+----------------------------------------------------------------------------------------------------------------------------------------------
+
+
+							Network Address Translation [NAT]
+							=================================
+
+	
+								ISP
+							    ----------
+								|
+								|						Public IP's
+								|
+							    Firewall
+							 -------------
+				--------------------------------|----------------------------------------------
+								|
+							   Admin Server						Private IP's	
+								| 192.168.0.1
+								|
+					--------------------------------------------------------
+					|							|
+					|							|
+				     Server A						    Server B
+					| 192.168.2.1						|  192.168.1.1
+					|							|
+				-----------------					-----------------
+				|	|	|					|	|	|
+				|	|	|					|	|	|
+				PC1	PC2	PC3					PC4	PC5	PC6
+			198.168.2.10		198.168.2.12			198.168.1.10		198.168.1.12	
+				    198.168.2.11					    198.168.1.11	
+
+- Say 192.168.2.10 requesting for google.com, the packets moves to 192.168.2.1 then to 192.168.0.1 then to Public IP. Only then 192.168.2.10 can get google.com
+
+- Firewall supports 2 types of NAT
+	* Masquerading
+	* Port Forwarding
+
+- Masquerading
+  ------------
+	Here, a system will forward packets that are not addressed to itself, but to the intended recipient while changing the source address of the 
+       Packets that goes through its own public IP address.
+
+ Syntax ::
+	fw-cmd --permanent --zone = <zone name> --add-Masquerade
+
+	-p		|___ This is the function of - and --, In -- we can write full name i.e permanent, but in - only p
+	---permanent	|	
+
+- Port Forwarding
+  ---------------
+	Here, traffic to a single port is forwarded to a different port in the same machine or to a port in different machine.
+
+- Syntax ::
+	fw-cmd --permanent --zone <zone name> --add -forward-port port = <port#>:proto = <protocol> [:to port = <port#>] [:to addr = <ip addr>]
+--------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+							Firewall Examples
+							=================
+
+1) Reject the traffic from IP Address 192.168.0.11 in DMZ zone
+
+	$ firewall-cmd --permanent --zone=dmz --add-rich-rule='rule family=ipv4 source address = 192.168.0.11 reject'
+
+	$ firewall-cmd --reload
+
+
+2) Accept all TCP packets on port 7900 till 7905 in DMZ zone for IP 192.168.1.0
+
+	$ firewall-cmd --permanent --zone=dmz --add-rich-rule='rule family=ipv4 source address 192.168.1.0 port port=7900 - 7905 protocol = tcp accept'
+
+	$ firewall-cmd --reload
+
+
+3) Command to forward incoming connection on Port number 513/tcp on the firewall to port number 132/tcp on the maching with 192.168.0.254
+
+   Using Rich rule
+
+	$ firewall-cmd --permanent --add-rich-rule = 'rule family = ipv4 source address = 192.168.0.254 forward-port port=513 protocol = tcp to-port =132 accept'
+	$ firewall-cmd --reload
+
+   Using Port Forwarding
+
+	$ firewall-cmd --permanent --add-forward-port port = 513 : proto = tcp : toport = 132 : toaddr = 192.168.0.254
+	$ firewall-cmd --reload	
+
+
+
+
+
+	 
+
+
+
+
+
+	

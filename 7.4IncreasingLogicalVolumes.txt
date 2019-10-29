@@ -1,0 +1,270 @@
+
+$  df -hT
+$ vgs
+$ lsblk
+$ fdisk /dev/sda
+p
+n
+n
+w
+$ partprobe
+$ fdisk -l
+$ vgextend BTM /dev/sda7
+$ vgs
+$ lsblk
+
+Increasing Logical Volumes in case of Ext4 File System
+
+$ lvs
+$ vgs
+$ df -hT
+$ lvextend -L +500M /dev/BTM/LIT1
+$ resize2fs /dev/BTM/LIT1
+$ df -hT
+
+Increasing Logical Volumes in case of xfs File System
+
+$ lvextend -L +500M /dev/BTM/LIT2
+$ xfs_growfs /dev/BTM/LIT2
+$ df -hT
+-------------------------------------------------------------------
+
+
+[karthik@localhost ~]$ su -
+Password: 
+Last login: Fri Dec 28 10:41:00 IST 2018 on pts/0
+[root@localhost ~]# cd /
+[root@localhost /]# 
+[root@localhost /]# df -hT
+Filesystem           Type      Size  Used Avail Use% Mounted on
+/dev/sda2            xfs        15G  3.8G   11G  26% /
+devtmpfs             devtmpfs  1.9G     0  1.9G   0% /dev
+tmpfs                tmpfs     1.9G     0  1.9G   0% /dev/shm
+tmpfs                tmpfs     1.9G   13M  1.9G   1% /run
+tmpfs                tmpfs     1.9G     0  1.9G   0% /sys/fs/cgroup
+/dev/sda1            xfs        97M   75M   22M  78% /boot
+/dev/mapper/BTM-LIT2 xfs       2.0G   33M  2.0G   2% /dirl
+/dev/mapper/BTM-LIT1 ext4      976M  2.6M  907M   1% /dirL
+tmpfs                tmpfs     378M  4.0K  378M   1% /run/user/42
+tmpfs                tmpfs     378M   24K  378M   1% /run/user/1000
+/dev/sr0             iso9660   4.2G  4.2G     0 100% /run/media/karthik/RHEL-7.6 Server.x86_64
+[root@localhost /]# 
+[root@localhost /]# vgs
+  VG  #PV #LV #SN Attr   VSize VFree 
+  BTM   2   2   0 wz--n- 4.99g <2.04g
+[root@localhost /]# lsblk
+NAME         MAJ:MIN RM  SIZE RO TYPE MOUNTPOINT
+sda            8:0    0  750G  0 disk 
++-sda1         8:1    0  100M  0 part /boot
++-sda2         8:2    0 14.7G  0 part /
++-sda3         8:3    0    4G  0 part [SWAP]
++-sda4         8:4    0    1K  0 part 
++-sda5         8:5    0    2G  0 part 
+¦ +-BTM-LIT1 253:0    0    1G  0 lvm  /dirL
++-sda6         8:6    0    3G  0 part 
+  +-BTM-LIT2 253:1    0    2G  0 lvm  /dirl
+sr0           11:0    1  4.2G  0 rom  /run/media/karthik/RHEL-7.6 Server.x86_64
+[root@localhost /]# 
+[root@localhost /]# vgextend BTM /dev/sda5
+  Physical volume '/dev/sda5' is already in volume group 'BTM'
+  Unable to add physical volume '/dev/sda5' to volume group 'BTM'
+  /dev/sda5: physical volume not initialized.
+[root@localhost /]# vgs
+  VG  #PV #LV #SN Attr   VSize VFree 
+  BTM   2   2   0 wz--n- 4.99g <2.04g
+[root@localhost /]# lsblk
+NAME         MAJ:MIN RM  SIZE RO TYPE MOUNTPOINT
+sda            8:0    0  750G  0 disk 
++-sda1         8:1    0  100M  0 part /boot
++-sda2         8:2    0 14.7G  0 part /
++-sda3         8:3    0    4G  0 part [SWAP]
++-sda4         8:4    0    1K  0 part 
++-sda5         8:5    0    2G  0 part 
+¦ +-BTM-LIT1 253:0    0    1G  0 lvm  /dirL
++-sda6         8:6    0    3G  0 part 
+  +-BTM-LIT2 253:1    0    2G  0 lvm  /dirl
+sr0           11:0    1  4.2G  0 rom  /run/media/karthik/RHEL-7.6 Server.x86_64
+[root@localhost /]# fdisk /dev/sda
+Welcome to fdisk (util-linux 2.23.2).
+
+Changes will remain in memory only, until you decide to write them.
+Be careful before using the write command.
+
+
+Command (m for help): p
+
+Disk /dev/sda: 805.3 GB, 805306368000 bytes, 1572864000 sectors
+Units = sectors of 1 * 512 = 512 bytes
+Sector size (logical/physical): 512 bytes / 512 bytes
+I/O size (minimum/optimal): 512 bytes / 512 bytes
+Disk label type: dos
+Disk identifier: 0x00083a8c
+
+   Device Boot      Start         End      Blocks   Id  System
+/dev/sda1   *        2048      206847      102400   83  Linux
+/dev/sda2          206848    30926847    15360000   83  Linux
+/dev/sda3        30926848    39315455     4194304   82  Linux swap / Solaris
+/dev/sda4        39315456  1572863999   766774272    5  Extended
+/dev/sda5        39317504    43511807     2097152   83  Linux
+/dev/sda6        43513856    49805311     3145728   83  Linux
+
+Command (m for help): n
+All primary partitions are in use
+Adding logical partition 7
+First sector (49807360-1572863999, default 49807360): 
+Using default value 49807360
+Last sector, +sectors or +size{K,M,G} (49807360-1572863999, default 1572863999): +3G
+Partition 7 of type Linux and of size 3 GiB is set
+
+Command (m for help): n
+All primary partitions are in use
+Adding logical partition 8
+First sector (56100864-1572863999, default 56100864): 
+Using default value 56100864
+Last sector, +sectors or +size{K,M,G} (56100864-1572863999, default 1572863999): +4G
+Partition 8 of type Linux and of size 4 GiB is set
+
+Command (m for help): w
+The partition table has been altered!
+
+Calling ioctl() to re-read partition table.
+
+WARNING: Re-reading the partition table failed with error 16: Device or resource busy.
+The kernel still uses the old table. The new table will be used at
+the next reboot or after you run partprobe(8) or kpartx(8)
+Syncing disks.
+[root@localhost /]# partprobe
+Warning: Unable to open /dev/sr0 read-write (Read-only file system).  /dev/sr0 has been opened read-only.
+[root@localhost /]# 
+[root@localhost ~]# fdisk -l
+
+Disk /dev/sda: 805.3 GB, 805306368000 bytes, 1572864000 sectors
+Units = sectors of 1 * 512 = 512 bytes
+Sector size (logical/physical): 512 bytes / 512 bytes
+I/O size (minimum/optimal): 512 bytes / 512 bytes
+Disk label type: dos
+Disk identifier: 0x00083a8c
+
+   Device Boot      Start         End      Blocks   Id  System
+/dev/sda1   *        2048      206847      102400   83  Linux
+/dev/sda2          206848    30926847    15360000   83  Linux
+/dev/sda3        30926848    39315455     4194304   82  Linux swap / Solaris
+/dev/sda4        39315456  1572863999   766774272    5  Extended
+/dev/sda5        39317504    43511807     2097152   83  Linux
+/dev/sda6        43513856    49805311     3145728   83  Linux
+/dev/sda7        49807360    56098815     3145728   83  Linux
+/dev/sda8        56100864    64489471     4194304   83  Linux
+
+Disk /dev/mapper/BTM-LIT1: 1073 MB, 1073741824 bytes, 2097152 sectors
+Units = sectors of 1 * 512 = 512 bytes
+Sector size (logical/physical): 512 bytes / 512 bytes
+I/O size (minimum/optimal): 512 bytes / 512 bytes
+
+
+Disk /dev/mapper/BTM-LIT2: 2097 MB, 2097152000 bytes, 4096000 sectors
+Units = sectors of 1 * 512 = 512 bytes
+Sector size (logical/physical): 512 bytes / 512 bytes
+I/O size (minimum/optimal): 512 bytes / 512 bytes
+
+[root@localhost /]# vgextend BTM /dev/sda7
+WARNING: ext4 signature detected on /dev/sda7 at offset 1080. Wipe it? [y/n]: y
+  Wiping ext4 signature on /dev/sda7.
+  Physical volume "/dev/sda7" successfully created.
+  Volume group "BTM" successfully extended
+[root@localhost /]# 
+[root@localhost /]# vgs
+  VG  #PV #LV #SN Attr   VSize  VFree 
+  BTM   3   2   0 wz--n- <7.99g <5.04g
+[root@localhost /]# lsblk
+NAME         MAJ:MIN RM  SIZE RO TYPE MOUNTPOINT
+sda            8:0    0  750G  0 disk 
++-sda1         8:1    0  100M  0 part /boot
++-sda2         8:2    0 14.7G  0 part /
++-sda3         8:3    0    4G  0 part [SWAP]
++-sda4         8:4    0  512B  0 part 
++-sda5         8:5    0    2G  0 part 
+¦ +-BTM-LIT1 253:0    0    1G  0 lvm  /dirL
++-sda6         8:6    0    3G  0 part 
+¦ +-BTM-LIT2 253:1    0    2G  0 lvm  /dirl
++-sda7         8:7    0    3G  0 part 
++-sda8         8:8    0    4G  0 part 
+sr0           11:0    1  4.2G  0 rom  /run/media/karthik/RHEL-7.6 Server.x86_64
+[root@localhost /]# 
+[root@localhost /]# 
+[root@localhost /]# lvs
+  LV   VG  Attr       LSize Pool Origin Data%  Meta%  Move Log Cpy%Sync Convert
+  LIT1 BTM -wi-ao---- 1.00g                                                    
+  LIT2 BTM -wi-ao---- 1.95g                                                    
+[root@localhost /]# 
+[root@localhost /]# vgs
+  VG  #PV #LV #SN Attr   VSize  VFree 
+  BTM   3   2   0 wz--n- <7.99g <5.04g
+[root@localhost /]# 
+[root@localhost /]# df -hT
+Filesystem           Type      Size  Used Avail Use% Mounted on
+/dev/sda2            xfs        15G  3.8G   11G  26% /
+devtmpfs             devtmpfs  1.9G     0  1.9G   0% /dev
+tmpfs                tmpfs     1.9G     0  1.9G   0% /dev/shm
+tmpfs                tmpfs     1.9G   13M  1.9G   1% /run
+tmpfs                tmpfs     1.9G     0  1.9G   0% /sys/fs/cgroup
+/dev/sda1            xfs        97M   75M   22M  78% /boot
+/dev/mapper/BTM-LIT2 xfs       2.0G   33M  2.0G   2% /dirl
+/dev/mapper/BTM-LIT1 ext4      976M  2.6M  907M   1% /dirL
+tmpfs                tmpfs     378M  4.0K  378M   1% /run/user/42
+tmpfs                tmpfs     378M   24K  378M   1% /run/user/1000
+/dev/sr0             iso9660   4.2G  4.2G     0 100% /run/media/karthik/RHEL-7.6 Server.x86_64
+[root@localhost /]# 
+[root@localhost /]# lvextend -L +500M /dev/BTM/LIT1
+  Size of logical volume BTM/LIT1 changed from 1.00 GiB (256 extents) to <1.49 GiB (381 extents).
+  Logical volume BTM/LIT1 successfully resized.
+[root@localhost /]# 
+[root@localhost /]# resize2fs /dev/BTM/LIT1
+resize2fs 1.42.9 (28-Dec-2013)
+Filesystem at /dev/BTM/LIT1 is mounted on /dirL; on-line resizing required
+old_desc_blocks = 1, new_desc_blocks = 1
+The filesystem on /dev/BTM/LIT1 is now 390144 blocks long.
+
+[root@localhost /]# df -hT
+Filesystem           Type      Size  Used Avail Use% Mounted on
+/dev/sda2            xfs        15G  3.8G   11G  26% /
+devtmpfs             devtmpfs  1.9G     0  1.9G   0% /dev
+tmpfs                tmpfs     1.9G     0  1.9G   0% /dev/shm
+tmpfs                tmpfs     1.9G   13M  1.9G   1% /run
+tmpfs                tmpfs     1.9G     0  1.9G   0% /sys/fs/cgroup
+/dev/sda1            xfs        97M   75M   22M  78% /boot
+/dev/mapper/BTM-LIT2 xfs       2.0G   33M  2.0G   2% /dirl
+/dev/mapper/BTM-LIT1 ext4      1.5G  3.0M  1.4G   1% /dirL
+tmpfs                tmpfs     378M  4.0K  378M   1% /run/user/42
+tmpfs                tmpfs     378M   24K  378M   1% /run/user/1000
+/dev/sr0             iso9660   4.2G  4.2G     0 100% /run/media/karthik/RHEL-7.6 Server.x86_64
+[root@localhost /]# 
+[root@localhost /]# lvextend -L +500M /dev/BTM/LIT2
+  Size of logical volume BTM/LIT2 changed from 1.95 GiB (500 extents) to 2.44 GiB (625 extents).
+  Logical volume BTM/LIT2 successfully resized.
+[root@localhost /]# 
+[root@localhost /]# xfs_growfs /dev/BTM/LIT2
+meta-data=/dev/mapper/BTM-LIT2   isize=512    agcount=4, agsize=128000 blks
+         =                       sectsz=512   attr=2, projid32bit=1
+         =                       crc=1        finobt=0 spinodes=0
+data     =                       bsize=4096   blocks=512000, imaxpct=25
+         =                       sunit=0      swidth=0 blks
+naming   =version 2              bsize=4096   ascii-ci=0 ftype=1
+log      =internal               bsize=4096   blocks=2560, version=2
+         =                       sectsz=512   sunit=0 blks, lazy-count=1
+realtime =none                   extsz=4096   blocks=0, rtextents=0
+data blocks changed from 512000 to 640000
+[root@localhost /]# 
+[root@localhost /]# df -hT
+Filesystem           Type      Size  Used Avail Use% Mounted on
+/dev/sda2            xfs        15G  3.8G   11G  26% /
+devtmpfs             devtmpfs  1.9G     0  1.9G   0% /dev
+tmpfs                tmpfs     1.9G     0  1.9G   0% /dev/shm
+tmpfs                tmpfs     1.9G   13M  1.9G   1% /run
+tmpfs                tmpfs     1.9G     0  1.9G   0% /sys/fs/cgroup
+/dev/sda1            xfs        97M   75M   22M  78% /boot
+/dev/mapper/BTM-LIT2 xfs       2.5G   33M  2.5G   2% /dirl
+/dev/mapper/BTM-LIT1 ext4      1.5G  3.0M  1.4G   1% /dirL
+tmpfs                tmpfs     378M  4.0K  378M   1% /run/user/42
+tmpfs                tmpfs     378M   24K  378M   1% /run/user/1000
+/dev/sr0             iso9660   4.2G  4.2G     0 100% /run/media/karthik/RHEL-7.6 Server.x86_64
+[root@localhost /]# 

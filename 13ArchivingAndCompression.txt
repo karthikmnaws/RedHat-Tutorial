@@ -1,0 +1,59 @@
+
+
+							Archiving and Compression
+							=========================
+
+
+- Archiving and compressing files are usefull when creating backups and transfering data accross the network.
+- Syntax:
+	tar -cvf <filename.tar> <files to be compressed>
+
+- 3 Types of Compression are
+	* gzip
+	* bzip
+	* xzzip
+
+- gzip( gun zip )
+  --------------
+  * It uses deflate algorithm
+  * It maintains the compression ratio for lower sized files and it looses the compression ratio, if file size becomes bigger.
+  * If we compress and de-compress a files many times, their is a chances of data loss.
+  * Compression/decompression is very fact and it is compatable with all types of linux OS
+  * Syntax
+	 $ tar -cvzf <filename.tar.gz> <files to be compresed>
+	 To Compress
+
+	 $ tar -xzf <filename.tar.gz>
+	 To DeCompress
+
+- bzip or bun zip
+  --------------
+  * Manitains a compress ratio even for bigger files.
+  * It uses burrow's whealer's Algorithm
+  * Greater compression ratio at the cost of longer compression time and memory required is more compared to gzip.
+  * Syntax	
+	$ tar -cvjf <filename.tar.bz2> <file to be compressed>
+	TO Compress
+
+	$ tar -xjf <filename.tar.bz2>
+
+- xz zip
+  ------
+  * It uses LZMA2 Algorithm.
+  * Greater compressor ratio, lesser disk space for small sized files.
+  * Time and memory requirement is more.
+  * Drawback is, it is not compatable with any linux O.S other than Redhat
+  * Syntax
+	$ tar -cvfJ <filename.tar.xz> <file to be compressed>
+	
+	$ tar -xJf <filename.tar.xz>
+
+- Options are
+	c = create
+	v = verbose
+	f = file
+	x = extract
+       -t = to list the contents of compressed files.
+	z = gzip compression
+	j = bzip compression
+	J = xzzip compression

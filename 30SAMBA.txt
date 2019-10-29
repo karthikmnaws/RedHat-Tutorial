@@ -1,0 +1,72 @@
+
+								SAMBA Server
+								============
+
+- SAMBA server is used to share directories over the network, it is a user based authentication server.
+- Difference between NFS and SAMBA are
+* NFS is host based authentication server, where as samba is user based authentication server.
+* In NFS we share only files and directories, where as in samba along with Files and directories we can also share printer devices
+* NFS provides insecure encrytions
+
+
+								Server Side
+								------------
+
+cd
+yum install -y samba*
+systemctl enable smb.service nmb.service
+systemctl start smb.service nmb.service
+mkdir /dir3
+touch /dir3/file{1..5}
+chown -Rt samba-share-t/dir3
+ls -z /dir3/
+adduser sam
+adduser brad
+smbpasswd -a brad
+smbpasswd -a ram
+pdbedit -L		//to list the samba users
+vim /etc/samba/smb.conf
+	Line no: 89
+	workgroup = Test			       			// Windows domain name, now it is just for testing purpose
+   Then go th end of file snd type
+	[samba]
+	path = /dir3
+	hosts allow = 172.25.
+	valid users = brad ram
+	writable = ram
+	browsable = yes
+
+firewall-cmd --permanent -add-service=samba
+firewall-cmd --reload
+sambclient //server0.example.com/samba -U ram
+
+								Client Part
+							    --------------------
+
+cd
+yum install -y samba*
+systemctl enable smb.service nmb.service
+systemctl start smb.service nmb.service
+mkdir /sambashare
+yum install -y cifs-utils.x86_64
+vim /root/crds
+	username = ram
+	password = redhat
+	username = brad
+	password = redhat
+
+vim /etc/fstab
+	//server0.example.com/samba	/sambashare	cifs	defaults.multiuser,sec=ntlmssp, credentials=/root/crds	0 0
+
+systemctl restart smb.service nmb.service
+mount -a
+df -hT
+adduser joe
+passwd joe
+su - joe
+cd /sambashare
+cifscreds add -u ram server0.example.com
+ls
+touch file10
+	
+

@@ -1,0 +1,162 @@
+
+						Systemd
+					  ===================
+
+- Lets say we have 10 Dependencies, CheckConfig		| | | | | | | | | | 	all are up and running.
+	We assumed all are running, suppose if any are not running, we have to stop service, and make all dependencies to run.
+	But this need high technical knowledge.
+
+- This is the reason systemctl bought
+		     --------
+
+- systemctl <enable> <s/h>		// systemctl enables systemd.
+	from 0   0   0   0   0   0   0   0   0   0
+	to   |   |   |   |   |   |   |   |   |   |
+	    pid pid pid pid pid pid pid pid pid pid
+ 	    ---------------------------------------
+				|
+				|
+			       root			These pid's is connected to root.
+
+- systemctl start <s/h>
+	Now while startingi, if any dependencies not running, we came to know at begining itself.
+
+- Deamon
+  --------
+	It is a type of program in Unix like O.S that runs without stopage in the background rather than under the control of an user waiting to be 
+	activated by the occurance of the specific unit.
+	They are initiated by the process. Background Process for a service or an application is called a Deamon.
+
+- Service
+  ---------
+	It is a combination of one or more Deamons which contineously runs in the background. A user always interacts with the service.
+	init Deamon is replaced by systemd Deamon.
+
+	init is a Deamon process which starts as soon the computer starts and continue running till it is shutdown.
+	It is a first process to start and has a pId if 1.
+
+- Difference between systemd and init
+  -----------------------------------
+
+1) init is used to start up only one process at a time during booting, where as systemd initiates multiple independence services simultaneously.
+
+2) In init, strting of individual Deamon of a service is not possible, we have to start entire service, where as in systemd individual Deamons
+    can be started without having started the entire service.
+
+3) systemd provides automatic service dependency management, where if any independent service fails, it remembers and avoides the 
+    restarting of services again and again.
+
+- chkconfig <Service name> <on/off>
+- service <service name> <enable / disable / start>
+
+
+- init Scripts or run levels
+  --------------------------
+
+init 0 => shut down
+init 1 => Single user mode
+init 2 => multiuser with CLI mode and without network.
+init 3 => full multiuser with CLI mode
+init 4 => not used
+init 5 => multiuser with GUI
+init 6 => restart / reboot
+
+- systemctl
+  ---------
+	This command is a central management tool for  controlling the init systems.
+
+- systemd
+  --------
+	This is an init system and the purpose of this is to initialize all the components, that must be started after the Kernal has booted.
+
+- systemctl <enable / start / stop / disable> <service name>
+-------------------------------------------------------------------------------------------------------------------------------------------------------
+
+$ cd
+$ systemctl list-units --all			// Lists all the units of System
+$ systemctl list-units --type=service		// Lists all the service
+$ systemctl list-units --type=mount		// Lists all the mount
+$ systemctl -t help				// Lists all the units in systemctl
+$ systemctl press tab twice			// It displays all options in systemclt
+----------------------------------------------------------------------------------------------------------------------------------------------------
+
+[karthik@desktop0 ~]$ systemctl list-units --all
+ UNIT                                                         LOAD      ACTIVE   SUB       DESCRIPTION
+  proc-sys-fs-binfmt_misc.automount                            loaded    active   waiting   Arbitrary Executable File Formats File System Automount Po
+  dev-cdrom.device                                             loaded    active   plugged   VMware_Virtual_SATA_CDRW_Drive RHEL-7.6_Server.x86_64
+  dev-disk-by\x2did-ata\x2dVMware_Virtual_SATA_CDRW_Drive_01000000000000000001.device loaded    active   plugged   VMware_Virtual_SATA_CDRW_Drive RHEL
+  dev-disk-by\x2dlabel-RHEL\x2d7.6\x5cx20Server.x86_64.device  loaded    active   plugged   VMware_Virtual_SATA_CDRW_Drive RHEL-7.6_Server.x86_64
+  dev-disk-by\x2dpath-pci\x2d0000:00:10.0\x2dscsi\x2d0:0:0:0.device loaded    active   plugged   VMware_Virtual_S
+  dev-disk-by\x2dpath-pci\x2d0000:00:10.0\x2dscsi\x2d0:0:0:0\x2d
+
+[karthik@desktop0 ~]$ systemctl list-units --type=service
+UNIT                               LOAD   ACTIVE SUB     DESCRIPTION
+abrt-ccpp.service                  loaded active exited  Install ABRT coredump hook
+abrt-oops.service                  loaded active running ABRT kernel log watcher
+abrt-xorg.service                  loaded active running ABRT Xorg log watcher
+abrtd.service                      loaded active running ABRT Automated Bug Reporting Tool
+accounts-daemon.service            loaded active running Accounts Service
+alsa-state.service                 loaded active running Manage Sound Card State (restore and store)
+atd.service                        loaded active running Job spooling tools
+auditd.service                     loaded active running Security Auditing Service
+avahi-daemon.service               loaded active running Avahi mDNS/DNS-SD Stack
+blk-availability.service           loaded active exited  Availability of blo
+
+
+[karthik@desktop0 ~]$ systemctl list-units --type=mount
+UNIT                                                 LOAD   ACTIVE SUB     DESCRIPTION
+-.mount                                              loaded active mounted /
+boot.mount                                           loaded active mounted /boot
+dev-hugepages.mount                                  loaded active mounted Huge Pages File System
+dev-mqueue.mount                                     loaded active mounted POSIX Message Queue File System
+run-media-karthik-RHEL\x2d7.6\x20Server.x86_64.mount loaded active mounted /run/media/karthik/RHEL-7.6 Server.x86_64
+run-user-0.mount                                     loaded active mounted /run/user/0
+run-user-1000-gvfs.mount                             loaded active mounted /run/user/1000/gvfs
+run-user-1000.mount                                  loaded active mounted /run/user/1000
+run-user-42.mount                                    loaded active mounted /run/user/42
+sys-fs-fuse-connections.mount                        loaded active mounted FUSE Control File System
+sys-kernel-config.mount                              loaded active mounted Configuration File System
+sys-kernel-debug.mount                               loaded active mounted Debug File System
+var-lib-nfs-rpc_pipefs.mount                         loaded active mounted RPC Pipe File System
+
+LOAD   = Reflects whether the unit definition was properly loaded.
+ACTIVE = The high-level unit activation state, i.e. generalization of SUB.
+SUB    = The low-level unit activation state, values depend on unit type.
+
+13 loaded units listed. Pass --all to see loaded but inactive units, too.
+To show all installed unit files use 'systemctl list-unit-files'.
+
+
+[karthik@desktop0 ~]$ systemctl -t help
+Available unit types:
+service
+socket
+busname
+target
+snapshot
+device
+mount
+automount
+swap
+timer
+path
+slice
+scope
+
+[karthik@desktop0 ~]$ systemctl 
+add-requires           disable                is-active              list-timers            rescue                 stop
+add-wants              edit                   is-enabled             list-unit-files        reset-failed           suspend
+cancel                 emergency              is-failed              list-units             restart                switch-root
+cat                    enable                 isolate                mask                   set-default            try-restart
+condreload             exit                   is-system-running      poweroff               set-environment        unmask
+condrestart            force-reload           kexec                  preset                 set-property           unset-environment
+condstop               get-default            kill                   reboot                 show                   
+daemon-reexec          halt                   link                   reenable               show-environment       
+daemon-reload          help                   list-dependencies      reload                 snapshot               
+default                hibernate              list-jobs              reload-or-restart      start                  
+delete                 hybrid-sleep           list-sockets           reload-or-try-restart  status          
+
+
+	 		
+			
+			

@@ -1,0 +1,85 @@
+https://www.youtube.com/watch?v=hKSP6UxvlwA (Part1)
+https://www.youtube.com/watch?v=C4Bk63GzaSY (Part2)
+
+Redhat	Server	192.168.56.133 
+Redhat	Node1	192.168.56.137
+Ubuntu	Node2	192.168.56.136
+
+RootPassword	2019	{SSHA}72vebzz/7Eg+YqPnj3F4TOduCvs+Q8wd
+
+
+ldappasswd -s newuser1@123 -W -D "cn=ldapadmin,dc=itsupport,dc=local" -x "uid=newuser1,ou=People,dc=itsupport,dc=local"
+
+
+
+							Light Weight Directory Access Protocol [LDAP]
+							=============================================
+
+			Contains all the Server Users details
+					|	|------------------------------|
+					|------>|**|			       |
+						|**|	classroom.example.com  | 
+						|------------------------------|  
+								|
+								|
+								|
+								|
+					|--------------------------------------------|
+					|					     |	
+					|					     |	
+					|					     |	
+				   |----------|		  			|---------|
+				   |Indian    |					|  US     |
+				   | Server   |					| Server  |
+				   |----------|					|---------|
+					|					     |	
+					|					     |	
+					|					     |
+					V1					    V2
+
+- LDAP id = Credentials + Pam.d + Ca.crt
+- autofs  -|------ home directory
+           |------ Location of account
+
+- Modern computer Infrastructure tends to consists of many computer with multiple services running on them, keeping local user accounts for all these machines
+  and their services in synchronization is a risky tasks, Solution to this is not to store account information locally, instead to retrive information from
+  centralized store. Hence is a concept of LDAP.
+
+- $ ssh root@classroom.example.com
+- $ yum install -y autoconfig-gtk.x86_64
+- $ autoconfig-gtk
+
+- Configuring LDAP Users
+  ----------------------
+	User Account Database	LDAP
+	LDAP search Base DN	dc = example, dc = com
+	LDAP Server		ldap://classroom.example.com
+	Tick for  Use TLS to encrypt
+	     Download CA Certificate
+
+- Download CA Certificate
+	Certificate URL	   http://classroom.example.com/pub/example-ca.cert
+
+- $ getent passwd ldapuser0
+- $ yum install -y autofs.x86_64
+- $ systemctl enable autofs.service
+- $ system start autofs.service
+
+- $ vim /etc/auto.master
+	Go to end of the page
+	/home/guests	/etc/auto.misc
+
+- $ vim /etc/auto.misc
+	Go to end of page
+	ldapuser0	-rw	classroom.example.com:/home/guests/ldapuser0
+
+- $ systemcal restart autofs.service
+- $ ssh ldapuser@server0
+
+	getent command helps to query users with respect to admin database w.r.t password, group host and protocol in network
+ 	
+
+
+
+	
+	

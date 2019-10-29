@@ -1,0 +1,61 @@
+
+
+							Secure Shell (SSH)
+							==================
+
+- It is used to RUN a shell securly on a remote system
+- SSH secures communication through public key encryption.
+- When SSH client connects to a server before client logs into the server, it sends a  copy of its public keys. 
+  This is used to setup a secure encryption for the encryption channel and to authenticate server to the client.
+- Syntas
+	ssh <username>@<hostname/ipaddress> <option>
+	-X = with gui
+
+- $ ls -a .ssh/
+    known_hosts	    authorized-keys
+
+- known_hosts
+  -----------
+	File used to view the system and identify which machine is connected to our system.
+
+- authrized-keys
+  -------------
+	File which matches the PasswordLess login.
+--------------------------------------------------------------------------------------------------------------------------------------------
+
+						 Next Stage of SSH is Secure Copy	
+						----------------------------------
+
+- It is used to copy files from one host to another host, over the network.
+- Syntax::
+  ---------
+	scp <source file> <user name>@<hostname/ipAddress>:<location>
+
+	scp -r <source dir> <username>@<hostname/ipAddress>:<location>
+
+---------------------------------------------------------------------------------------------------------------------------------------------
+
+						Remote Synchronise[rsync]
+						--------------------------
+
+- It is most commonly used command for copying and synchronising files and directory remotely as well as locally in Linux systems.
+- With rsync, we can copy and synchronise data remotely or locally accross directories accross discs and networks, perform data backups and mirror between
+  two Unix machines.
+- It is faster then SCP. Because it copies just difference between two set of files.
+- Syntax:
+     1)	rsync <option> <source> <destination>
+
+	Options are -V = verbose
+		    -H = Human Readable Format
+		    -R = Copies data recursively and don't preserve the file attributes.
+		    -A = Archai Mode and preserve file attributes.
+	   	    -Z = Compress file data.	
+		    -e = protocol used
+	
+     2) rvsync -avg <source dir> <destination dir>
+	copies direstories over the network.
+
+     3) rvsync -avzhe ssh <username>@<hostname/ipAddress>
+	To copy files from Server to local machine with SSH.
+
+			

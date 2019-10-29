@@ -1,0 +1,158 @@
+
+
+							    ( Very Important Topic )			
+								Process Management
+							================================
+					( The way OS behaves when we give command is called Process Management )
+
+
+- PId which is created for every process is Parent Id.
+- Process Life Cycle
+
+
+					wait()
+      -----> Parent Process ---------------------------------------> Parent Process --->
+   		|						|
+		|						|
+		|fork()						|
+		|						|
+	  Child Process ---------> Child Process ---------> Zombie Process
+			 exec()			  exit()
+
+     fork() = Diverting the process
+     Zombie = Consumes all the memory cycle of CPU and stops everything. Very dangerous	state.
+
+
+- A process is an executing program with several components and properties including a memory context priority and environment.
+  It is an activity running in memory to perform the actions called for by the execution of the command.
+							     ----------
+
+	
+- For each command that an user issues the shell spawn a clone of itself to execute the command. The clone is called a child process. After the
+  command is handedover to the child process for execution, the parent process goes back and waits for another job.
+-------------------------------------------------------------------------------------------------------------------------------------------
+	
+						 Linux Process State
+  						=====================
+
+1) Running (R)
+  ------------
+	Process is either executing on a CPU or waiting to RUN.
+
+2) Task_interuptable (S)
+  -----------------------
+	A process is waiting for some condition like hardware request or system recources access signal, when the signal satisfies the condition,
+  the process returns to running.
+
+3) Sleeping or Task_unintruptable (D)
+  -------------------------------------
+	The process will not respond to any delivered signal.
+
+4) Stopped (T)
+  ------------
+	The process is stopped by a signal by an user and another signal can resume it.
+
+5) Zombie (Z)
+  -----------
+	A child process signals its parent process as it exists, All resources except pID is released.
+-------------------------------------------------------------------------------------------------------------------------------------------------------
+	
+							Job Control
+						   ====================
+
+$ sleep 6000			// To run a process in Fore ground
+$ sleep 4000 &			// To run a job in Background
+$ jobs				// To lists all the jobs initiated by the user
+$ bg %1				// bg % job number, to run a job which is running in a  Fore ground in Background.
+$ fg %2				// To run a job in  fore ground which is running in background
+
+ctrl + z => To stop a Foreground job
+ctrl + c => To cancel or to Kill a Foreground jobs.
+
+$ ps				// provides snap shot of cutrrent running process
+$ ps -aux			// Lists process associate with the terminal.
+	
+ -a is all
+ -u is user
+ -x is limitations of the terminal
+
+$ top				// Like Task Manager in Windows
+
+- Basic problem with ps and Top is that, they display process on the terminal as a snap shot of time, This may not enough because some process loads
+  the system just for a function, hence we use sar. [ System Activity Report ].
+
+$ sar
+$ iostat
+
+iostat and sar
+--------------
+	These reports in general input and output statistics for the devices as well.
+
+- Nice (NI) and RENICE
+  --------------------
+	They are used to manage the priority of different process. NICE is used to start a process with different priority where as RENICE
+  is used to change the priority of current running processes, and the renge is between -20 to 19.
+  Process with -20 takes highest precidence over all other process.
+
+	Syntax :: 
+		nice -n <pid#>
+		renice -n <pid#>
+
+- $ w -f				// w is windows, -f is from
+	To view currently logged in users and their cumulative activities.
+	This is the only command which shows Remote users login as well.
+
+- $ pstree
+	To see process by tree structure
+
+- $ uptime
+	It is the load average by number of CPU course, it displays values of system activity for 1, 5 and 15 min.
+
+- $ kill <pid#>
+	It sends a signal to process by its id.
+
+- $ kill -l
+	Lists all the types of kill arguments.
+
+- $ kill all < command pattern >
+	To send a signal to one or more process matching selection criteria as command name, process owner.
+
+- $ pkill (pattern kill)
+	It is same as kill all, but uses advanced selection criteria as command Uid, gid and terminal.
+
+- $ pgrep -l -u <username>
+	To lists all the process for a perticular user.
+
+- $ pkill -9 -u <username>		// pkill -sigkill -u <username>
+	To kill all the process initiated by the user.
+---------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+- Logs
+ ---------
+	Log is nothing but an activity in any system, Logs are usefull to diagnose or trouble shoot a problems, syslog is a logging activity in the
+  system and can be managed by services orsyslog and systemd -journald and logs are stored at /var/log directory.
+					--------     -----------------                        -------------------
+
+- $ /var/log/messages	
+	All syslog messages are logged.
+
+- $ /var/log/secure
+	Log files related to security and authentication related messages and errors.
+
+- $ /var/log/cron
+	Log file related to periodically executed tasks.
+
+- $ /var/log/dmesg
+	All the kernal messages.
+	
+- $ journalctl
+	command shows the full system journal starting with older log entry, when Run as a root user.
+
+- $ journalctl -n
+	By defaults shows 10 last log entries.
+	
+
+
+ 
+
